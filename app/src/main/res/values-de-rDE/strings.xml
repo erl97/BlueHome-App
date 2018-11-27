@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BlueHome</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="dashboard_menu_1">Regeln</string>
+    <string name="dashboard_menu_2">Geräteliste</string>
+    <string name="dashboard_menu_3">Einstellungen</string>
+    <string name="dashboard_menu_4">Menü 4</string>
+    <string name="dashboard_menu_5">Menü 5</string>
+    <string name="no_entries">Keine Einträge vorhanden</string>
+</resources>

@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">BlueHome</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="dashboard_menu_1">Rules</string>
+    <string name="dashboard_menu_2">Devicelist</string>
+    <string name="dashboard_menu_3">Setup</string>
+    <string name="dashboard_menu_4">Menu 4</string>
+    <string name="dashboard_menu_5">Menu 5</string>
+    <string name="no_entries">No entries available</string>
 </resources>

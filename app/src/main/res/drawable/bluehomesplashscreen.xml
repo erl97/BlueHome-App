@@ -6,7 +6,7 @@
         android:left="50dp"
         android:right="50dp">
         <bitmap
-            android:gravity="fill_horizontal|center"
+            android:gravity="center"
             android:src="@drawable/bluehomelogo" />
     </item>
 </layer-list>
