@@ -17,11 +17,25 @@ public class DeviceListAdapter extends BaseAdapter {
     private ArrayList<BlueHomeDevice> devices;
     private String names[];
     private View rowView;
+    private boolean deleteActive;
 
     public DeviceListAdapter(Activity context, ArrayList<BlueHomeDevice> devices) {
 
         this.context = context;
         this.devices = devices;
+    }
+
+    public void setNewDevicelist(ArrayList<BlueHomeDevice> devices) {
+        this.devices = devices;
+    }
+
+
+    public void setDeleteActive(boolean deleteActive) {
+        this.deleteActive = deleteActive;
+    }
+
+    public boolean isDeleteActive() {
+        return deleteActive;
     }
 
     public int getCount() {
@@ -48,7 +62,7 @@ public class DeviceListAdapter extends BaseAdapter {
         nameText.setText(devices.get(position).getShownName());
         imageView.setImageResource(devices.get(position).getImgID());
         macText.setText("" + devices.get(position).getMacAdress() + " / " + devices.get(position).getDeviceName());
-        if(devices.get(position).isDeleteActive())
+        if(deleteActive)
             deleteBox.setVisibility(View.VISIBLE);
         else
             deleteBox.setVisibility(View.GONE);

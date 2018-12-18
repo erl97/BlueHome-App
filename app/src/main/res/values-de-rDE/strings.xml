@@ -8,4 +8,8 @@
     <string name="dashboard_menu_4">Menü 4</string>
     <string name="dashboard_menu_5">Menü 5</string>
     <string name="no_entries">Keine Einträge vorhanden</string>
+    <string name="add_new_device">Neues Gerät Hinzufügen</string>
+    <string name="device_shown_name">Angezeigter Name</string>
+    <string name="device_real_name">Physischer Name</string>
+    <string name="device_mac_address">MAC Adresse</string>
 </resources>

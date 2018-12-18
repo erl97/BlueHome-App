@@ -4,9 +4,16 @@
 <item android:drawable="@drawable/bluehomebackground" />
     <item
         android:left="50dp"
+        android:bottom="80dp"
         android:right="50dp">
         <bitmap
-            android:gravity="center"
+            android:gravity="bottom|center_horizontal"
             android:src="@drawable/bluehomelogo" />
+    </item>
+    <item
+        android:top="5dp">
+        <bitmap
+            android:gravity="top"
+            android:src="@drawable/splashroof" />
     </item>
 </layer-list>
