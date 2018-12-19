@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -77,8 +78,28 @@ public class BlueHomeDeviceStorageManager extends SQLiteOpenHelper {
      */
     public Cursor getData(String MAC) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res =  db.rawQuery( "select * from " + DBConstants.DEVICES_TABLE_NAME + " where " + DBConstants.DEVICES_COLUMN_MAC + "=" + MAC, null );
+        Cursor res =  db.rawQuery( "select * from " + DBConstants.DEVICES_TABLE_NAME + " where " + DBConstants.DEVICES_COLUMN_MAC + "='" + MAC.trim() + "'", null );
         return res;
+    }
+
+    /**
+     * Get a specific device from database, identified by Mac Address
+     * @param MAC Mac addres to look for
+     * @return BlueHomeDevice which is found
+     */
+    public BlueHomeDevice getDevice(String MAC) {
+        BlueHomeDevice tmp;
+        Cursor res = getData(MAC);
+        if(res.moveToFirst()) {
+            tmp = new BlueHomeDevice(res.getString(res.getColumnIndex(DBConstants.DEVICES_COLUMN_MAC)), res.getString(res.getColumnIndex(DBConstants.DEVICES_COLUMN_REAL_NAME)));
+            tmp.setShownName(res.getString(res.getColumnIndex(DBConstants.DEVICES_COLUMN_SHOWN_NAME)));
+            tmp.setImgID(res.getInt(res.getColumnIndex(DBConstants.DEVICES_COLUMN_IMG_ID)));
+            tmp.setNodeType(res.getInt(res.getColumnIndex(DBConstants.DEVICES_COLUMN_NODE_TYPE)));
+            return tmp;
+        } else {
+            Log.e("StorageManager", "didn't move");
+            return null;
+        }
     }
 
     /**
@@ -127,7 +148,6 @@ public class BlueHomeDeviceStorageManager extends SQLiteOpenHelper {
     public ArrayList<BlueHomeDevice> getAllDevices() {
         ArrayList<BlueHomeDevice> array_list = new ArrayList<BlueHomeDevice>();
         BlueHomeDevice tmp;
-        //hp = new HashMap();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res =  db.rawQuery( "select * from " + DBConstants.DEVICES_TABLE_NAME, null );
         res.moveToFirst();

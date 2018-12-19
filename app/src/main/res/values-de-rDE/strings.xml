@@ -12,4 +12,6 @@
     <string name="device_shown_name">Angezeigter Name</string>
     <string name="device_real_name">Physischer Name</string>
     <string name="device_mac_address">MAC Adresse</string>
+    <string name="edit_device">Gerät Bearbeiten</string>
+    <string name="apply_changes">Änderungen Speichern</string>
 </resources>

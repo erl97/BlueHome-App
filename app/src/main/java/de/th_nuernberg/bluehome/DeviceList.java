@@ -1,10 +1,13 @@
 package de.th_nuernberg.bluehome;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -35,18 +38,23 @@ public class DeviceList extends AppCompatActivity {
 
         DecimalFormat df = new DecimalFormat("00");
         BlueHomeDevice tmp;
-        //Fill list (DEMO)
-        /*for (int i = 0; i < 12; i++) {
-            tmp = new BlueHomeDevice("AB:CD:EF:GH:IJ:" + df.format(i), "Abe9i3ls");
-            tmp.setImgID(R.drawable.add);
-            tmp.setShownName("Gerät " + i);
-            storageManager.insertDevice(tmp);
-        }*/
 
         devices = storageManager.getAllDevices();
 
         list_adapter = new DeviceListAdapter(this, devices);
         list.setAdapter(list_adapter);
+
+
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent i = new Intent(DeviceList.this, EditDevice.class);
+                i.putExtra("macAddress", devices.get(position).getMacAdress());
+                startActivity(i);
+            }
+        });
+
+
 
         //Delete Entries from list:
         deleteButton.setOnClickListener(new View.OnClickListener() {
@@ -74,10 +82,16 @@ public class DeviceList extends AppCompatActivity {
 
                 }
 
+                if(list_adapter.isDeleteActive())
+                    deleteButton.setImageDrawable(getDrawable(R.drawable.delete_selected));
+                else
+                    deleteButton.setImageDrawable(getDrawable(R.drawable.delete));
+
                 devices = storageManager.getAllDevices();
                 list_adapter.setNewDevicelist(devices);
                 list_adapter.notifyDataSetChanged();
                 list.deferNotifyDataSetChanged();
+
             }
         });
 

@@ -11,4 +11,6 @@
     <string name="device_shown_name">Shown Name</string>
     <string name="device_real_name">Physical Name</string>
     <string name="device_mac_address">MAC Address</string>
+    <string name="edit_device">Edit Device</string>
+    <string name="apply_changes">Apply Changes</string>
 </resources>

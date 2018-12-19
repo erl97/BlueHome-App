@@ -23,7 +23,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".DeviceList" />
-        <activity android:name=".FindNewDevice"></activity>
+        <activity android:name=".FindNewDevice" />
+        <activity android:name=".EditDevice"></activity>
     </application>
 
 </manifest>
