@@ -7,7 +7,7 @@ public class BlueHomeDevice {
     private String deviceName;
     private String shownName;
     private int nodeType;
-    private int imgID;
+    private int imgID = R.drawable.bluehome_device;
     private boolean deleteActive = false;
     boolean toRemove = false;
 

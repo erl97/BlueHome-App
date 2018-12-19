@@ -24,7 +24,7 @@
         </activity>
         <activity android:name=".DeviceList" />
         <activity android:name=".FindNewDevice" />
-        <activity android:name=".EditDevice"></activity>
+        <activity android:name=".EditDevice" />
     </application>
 
 </manifest>

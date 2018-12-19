@@ -14,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.util.Arrays;
+
 import de.th_nuernberg.bluehome.BlueHomeDatabase.BlueHomeDeviceStorageManager;
 
 public class EditDevice extends AppCompatActivity {
@@ -39,7 +41,7 @@ public class EditDevice extends AppCompatActivity {
         imgSpinnerView = (Spinner)findViewById(R.id.edit_device_img_spinner);
         submitButton = (Button)findViewById(R.id.edit_device_submit_button);
 
-        spinnerImages = new Integer[]{R.drawable.add, R.drawable.bluehome_device, R.drawable.delete, R.drawable.dashboard_menu_button_1, R.drawable.dashboard_menu_button_2};
+        spinnerImages = new Integer[]{R.drawable.add, R.drawable.bluehome_device, R.drawable.delete, R.drawable.dashboard_menu_button_1, R.drawable.dashboard_menu_button_2, R.drawable.unknown_device};
 
         toEdit = db.getDevice(getIntent().getExtras().getString("macAddress"));
         if(toEdit == null)
@@ -52,11 +54,14 @@ public class EditDevice extends AppCompatActivity {
         ImageSpinnerAdapter adapter = new ImageSpinnerAdapter(getApplicationContext(), R.layout.image_spinner_layout, spinnerImages);
         imgSpinnerView.setAdapter(adapter);
 
+        imgSpinnerView.setSelection(Arrays.asList(spinnerImages).indexOf(toEdit.getImgID()));
+
 
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 toEdit.setShownName(shownNameView.getText().toString());
+                toEdit.setImgID(spinnerImages[imgSpinnerView.getSelectedItemPosition()]);
                 db.updateDevice(toEdit);
                 finish();
             }

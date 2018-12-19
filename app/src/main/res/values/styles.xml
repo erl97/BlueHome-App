@@ -19,4 +19,10 @@
     <!-- <item name="colorPrimaryDark">@android:color/white</item> -->
     </style>
 
+    <style name="CheckBox" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorControlNormal">@color/colorAccent</item>   <!-- normal border color -->
+        <item name="colorControlActivated">@color/colorAccent2</item> <!-- activated color -->
+        <item name="android:textColor">@color/colorAccent</item> <!-- checkbox text color -->
+    </style>
+
 </resources>
