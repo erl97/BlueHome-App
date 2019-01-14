@@ -3,7 +3,6 @@ package de.th_nuernberg.bluehome;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,7 +48,7 @@ public class EditDevice extends AppCompatActivity {
 
         shownNameView.setText(toEdit.getShownName());
         realNameView.setText(toEdit.getDeviceName());
-        macAddressView.setText(toEdit.getMacAdress());
+        macAddressView.setText(toEdit.getMacAddress());
 
         ImageSpinnerAdapter adapter = new ImageSpinnerAdapter(getApplicationContext(), R.layout.image_spinner_layout, spinnerImages);
         imgSpinnerView.setAdapter(adapter);

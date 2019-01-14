@@ -1,9 +1,7 @@
 package de.th_nuernberg.bluehome;
 
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -49,7 +47,7 @@ public class DeviceList extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent i = new Intent(DeviceList.this, EditDevice.class);
-                i.putExtra("macAddress", devices.get(position).getMacAdress());
+                i.putExtra("macAddress", devices.get(position).getMacAddress());
                 startActivity(i);
             }
         });
@@ -74,7 +72,7 @@ public class DeviceList extends AppCompatActivity {
                     for (int x = 0; x < list.getChildCount() ;x++){
                         cb = (CheckBox)list.getChildAt(x).findViewById(R.id.device_list_delete);
                         if(cb.isChecked()){
-                            storageManager.deleteDevice(devices.get(x).getMacAdress());
+                            storageManager.deleteDevice(devices.get(x).getMacAddress());
                         }
                     }
 

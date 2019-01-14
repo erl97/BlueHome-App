@@ -24,7 +24,7 @@ public class BlueHomeDevice {
         this.nodeType = nodeType;
     }
 
-    public String getMacAdress() {
+    public String getMacAddress() {
         return address;
     }
 

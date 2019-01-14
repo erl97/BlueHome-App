@@ -61,7 +61,7 @@ public class DeviceListAdapter extends BaseAdapter {
 
         nameText.setText(devices.get(position).getShownName());
         imageView.setImageResource(devices.get(position).getImgID());
-        macText.setText("" + devices.get(position).getMacAdress() + " / " + devices.get(position).getDeviceName());
+        macText.setText("" + devices.get(position).getMacAddress() + " / " + devices.get(position).getDeviceName());
         if(deleteActive)
             deleteBox.setVisibility(View.VISIBLE);
         else

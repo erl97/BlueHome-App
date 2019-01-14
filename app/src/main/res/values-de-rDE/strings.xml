@@ -14,4 +14,19 @@
     <string name="device_mac_address">MAC Adresse</string>
     <string name="edit_device">Gerät Bearbeiten</string>
     <string name="apply_changes">Änderungen Speichern</string>
+    <string name="import_string">Importieren</string>
+    <string name="export_string">Exportieren</string>
+    <string name="settings">Einstellungen</string>
+    <string name="select_directory">Auswählen</string>
+    <string name="choose_directory">Verzeichnis auswählen</string>
+    <string name="select">Auswählen</string>
+    <string name="path">Pfad</string>
+    <string name="acces_bluetooth_title">Diese App benötigt Zugriff auf Bluetooth</string>
+    <string name="acces_bluetooth_text">Bitte erlauben Sie den Zugriff auf Bluetooth im nächsten Fenster, um auf BlueHome Geräte zugreifen zu können.</string>
+    <string name="acces_location_title">Diese App benötigt Zugriff auf Ihren Standort</string>
+    <string name="acces_location_text">Bitte erlauben Sie den Zugriff auf Ihren Standort.</string>
+    <string name="acces_storage_title">Diese App benötigt Zugriff auf den Gerätespeicher</string>
+    <string name="acces_storage_text">Bitte erlauben Sie den Zugriff auf den Gerätespeicher, um Konfigurationen Im- und Exportieren zu können.</string>
+    <string name="ble_not_supported">Blutetooth LE wird von diesem Gerät nicht unterstützt</string>
+    <string name="find_new_device">Neues Gerät Suchen</string>
 </resources>

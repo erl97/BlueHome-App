@@ -35,4 +35,7 @@ dependencies {
 // Lifecycle components
     implementation "android.arch.lifecycle:extensions:$rootProject.archLifecycleVersion"
     annotationProcessor "android.arch.lifecycle:compiler:$rootProject.archLifecycleVersion"
+
+    //Directory Picker
+    implementation 'lib.kashif:folderpicker:2.4'
 }

@@ -25,4 +25,11 @@
         <item name="android:textColor">@color/colorAccent</item> <!-- checkbox text color -->
     </style>
 
+    <style name="AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:colorAccent">@color/colorAccent</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textColorPrimary">@color/colorAccent</item>
+        <item name="android:background">@color/colorBackground</item>
+    </style>
+
 </resources>

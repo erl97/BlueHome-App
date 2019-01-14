@@ -4,6 +4,9 @@
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission." />
 
     <application
         android:allowBackup="true"
@@ -23,8 +26,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".DeviceList" />
-        <activity android:name=".FindNewDevice" />
+        <activity android:name=".ManAddDev" />
         <activity android:name=".EditDevice" />
+        <activity android:name=".AppSettings" />
+        <activity android:name=".ExportData" />
+        <activity android:name=".FindNewDevice"></activity>
     </application>
 
 </manifest>

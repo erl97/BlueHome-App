@@ -64,7 +64,7 @@ public class BlueHomeDeviceStorageManager extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBConstants.DEVICES_COLUMN_REAL_NAME, dev.getDeviceName());
         contentValues.put(DBConstants.DEVICES_COLUMN_SHOWN_NAME, dev.getShownName());
-        contentValues.put(DBConstants.DEVICES_COLUMN_MAC, dev.getMacAdress());
+        contentValues.put(DBConstants.DEVICES_COLUMN_MAC, dev.getMacAddress());
         contentValues.put(DBConstants.DEVICES_COLUMN_IMG_ID, dev.getImgID());
         contentValues.put(DBConstants.DEVICES_COLUMN_NODE_TYPE, dev.getNodeType());
         db.insert(DBConstants.DEVICES_TABLE_NAME, null, contentValues);
@@ -122,10 +122,10 @@ public class BlueHomeDeviceStorageManager extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBConstants.DEVICES_COLUMN_REAL_NAME, dev.getDeviceName());
         contentValues.put(DBConstants.DEVICES_COLUMN_SHOWN_NAME, dev.getShownName());
-        contentValues.put(DBConstants.DEVICES_COLUMN_MAC, dev.getMacAdress());
+        contentValues.put(DBConstants.DEVICES_COLUMN_MAC, dev.getMacAddress());
         contentValues.put(DBConstants.DEVICES_COLUMN_IMG_ID, dev.getImgID());
         contentValues.put(DBConstants.DEVICES_COLUMN_NODE_TYPE, dev.getNodeType());
-        db.update(DBConstants.DEVICES_TABLE_NAME, contentValues, DBConstants.DEVICES_COLUMN_MAC + " = ? ", new String[] { dev.getMacAdress() } );
+        db.update(DBConstants.DEVICES_TABLE_NAME, contentValues, DBConstants.DEVICES_COLUMN_MAC + " = ? ", new String[] { dev.getMacAddress() } );
         return true;
     }
 
