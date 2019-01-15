@@ -1,6 +1,9 @@
 package de.th_nuernberg.bluehome;
 
+import android.bluetooth.BluetoothDevice;
 import android.net.MacAddress;
+
+import java.util.Objects;
 
 public class BlueHomeDevice {
     private String address;
@@ -14,6 +17,16 @@ public class BlueHomeDevice {
     public BlueHomeDevice(String address, String deviceName) {
         this.address = address;
         this.deviceName = deviceName;
+    }
+
+    public BlueHomeDevice(BlueHomeDevice dev) {
+        this.address = dev.getMacAddress();
+        this.deviceName = dev.getDeviceName();
+        this.shownName = dev.getShownName();
+        this.nodeType = dev.getNodeType();
+        this.imgID = dev.getImgID();
+        this.deleteActive = dev.isDeleteActive();
+        this.toRemove = dev.isToRemove();
     }
 
     public void setShownName(String shownName) {
@@ -62,5 +75,16 @@ public class BlueHomeDevice {
 
     public void setToRemove(boolean toRemove) {
         this.toRemove = toRemove;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if(!(object instanceof BlueHomeDevice))
+            return false;
+
+        if(this.getMacAddress().trim().equalsIgnoreCase(((BlueHomeDevice) object).getMacAddress().trim()))
+            return true;
+        else
+            return false;
     }
 }

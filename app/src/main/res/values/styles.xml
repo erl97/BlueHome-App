@@ -29,7 +29,7 @@
         <item name="android:colorAccent">@color/colorAccent</item>
         <item name="android:textColor">@color/colorAccent</item>
         <item name="android:textColorPrimary">@color/colorAccent</item>
-        <item name="android:background">@color/colorBackground</item>
+        <item name="android:background">@color/colorBackgroundSelected</item>
     </style>
 
 </resources>

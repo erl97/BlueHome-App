@@ -29,4 +29,13 @@
     <string name="acces_storage_text">Bitte erlauben Sie den Zugriff auf den Gerätespeicher, um Konfigurationen Im- und Exportieren zu können.</string>
     <string name="ble_not_supported">Blutetooth LE wird von diesem Gerät nicht unterstützt</string>
     <string name="find_new_device">Neues Gerät Suchen</string>
+    <string name="yes">Ja</string>
+    <string name="no">Nein</string>
+    <string name="add_device_question">Gerät Hinzufügen?</string>
+    <string name="like_to_add_question_1">"Möchten Sie das Gerät mit der MAC Adresse "</string>
+    <string name="like_to_add_question_2">" zu Ihrem System hinzufügen?"</string>
+    <string name="ok">OK</string>
+    <string name="save">Speichern</string>
+    <string name="name_device">Gerät bennenen</string>
+    <string name="give_device_name">"Geben Sie Ihrem neuen Gerät einen Namen: "</string>
 </resources>

@@ -28,4 +28,13 @@
     <string name="acces_storage_text">Please grant storage write access so this app can write configuration Files.</string>
     <string name="ble_not_supported">BLE is not Supported on this Device</string>
     <string name="find_new_device">Find new Device</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="add_device_question">Add Device?</string>
+    <string name="like_to_add_question_1">Would you like to add the Device with the MAC Address</string>
+    <string name="like_to_add_question_2">to your System?</string>
+    <string name="name_device">Name Device</string>
+    <string name="give_device_name">Give your new Device a Name:</string>
+    <string name="ok">OK</string>
+    <string name="save">Save</string>
 </resources>

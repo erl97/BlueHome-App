@@ -43,7 +43,7 @@ public class SplashScreen extends AppCompatActivity {
     }
 
     private final long getSplashScreenDuration() {
-        return 3000L;
+        return 300L;
     }
 
     private final void routeToAppropriatePage() {

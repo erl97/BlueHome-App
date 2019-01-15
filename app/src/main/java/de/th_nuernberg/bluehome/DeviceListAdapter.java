@@ -18,11 +18,20 @@ public class DeviceListAdapter extends BaseAdapter {
     private String names[];
     private View rowView;
     private boolean deleteActive;
+    private int version = 0;
+
+    private final int VERSION_BIG_SHOWN_NAME = 1;
+    private final int VERSION_BIG_MAC_ADDRESS = 2;
+    private final int VERSION_BIG_REAL_NAME = 3;
 
     public DeviceListAdapter(Activity context, ArrayList<BlueHomeDevice> devices) {
 
         this.context = context;
         this.devices = devices;
+    }
+
+    public void setVersion(int ver) {
+        version = ver;
     }
 
     public void setNewDevicelist(ArrayList<BlueHomeDevice> devices) {
@@ -52,16 +61,37 @@ public class DeviceListAdapter extends BaseAdapter {
 
     public View getView(int position,View view,ViewGroup parent) {
         LayoutInflater inflater=context.getLayoutInflater();
-        rowView=inflater.inflate(R.layout.device_row_layout, null,true);
+        rowView = inflater.inflate(R.layout.device_row_layout, null, true);
 
         TextView nameText = (TextView) rowView.findViewById(R.id.device_list_name);
         ImageView imageView = (ImageView) rowView.findViewById(R.id.device_list_img);
         TextView macText = (TextView) rowView.findViewById(R.id.device_list_mac);
         CheckBox deleteBox = (CheckBox) rowView.findViewById(R.id.device_list_delete);
 
-        nameText.setText(devices.get(position).getShownName());
+        switch (version) {
+            case VERSION_BIG_MAC_ADDRESS:
+                nameText.setText(devices.get(position).getMacAddress());
+                macText.setText(devices.get(position).getDeviceName());
+                break;
+
+            case VERSION_BIG_REAL_NAME:
+                nameText.setText(devices.get(position).getDeviceName());
+                macText.setText(devices.get(position).getMacAddress());
+                break;
+
+            case VERSION_BIG_SHOWN_NAME:
+                nameText.setText(devices.get(position).getShownName());
+                macText.setText("" + devices.get(position).getMacAddress() + " / " + devices.get(position).getDeviceName());
+                break;
+
+                default:
+                    nameText.setText(devices.get(position).getShownName());
+                    macText.setText("" + devices.get(position).getMacAddress() + " / " + devices.get(position).getDeviceName());
+                    break;
+        }
+
+
         imageView.setImageResource(devices.get(position).getImgID());
-        macText.setText("" + devices.get(position).getMacAddress() + " / " + devices.get(position).getDeviceName());
         if(deleteActive)
             deleteBox.setVisibility(View.VISIBLE);
         else

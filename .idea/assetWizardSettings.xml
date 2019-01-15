@@ -34,7 +34,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="scalingPercent" value="101" />
+                                                <entry key="scalingPercent" value="89" />
                                                 <entry key="trimmed" value="true" />
                                               </map>
                                             </option>
@@ -45,6 +45,8 @@
                                   </option>
                                   <option name="values">
                                     <map>
+                                      <entry key="backgroundAssetType" value="COLOR" />
+                                      <entry key="backgroundColor" value="242424" />
                                       <entry key="backgroundImage" value="$PROJECT_DIR$/app/src/main/res/drawable-hdpi/bluehomebackground.9.png" />
                                       <entry key="foregroundImage" value="$PROJECT_DIR$/app/src/main/res/drawable/bluehomelogo.png" />
                                     </map>
