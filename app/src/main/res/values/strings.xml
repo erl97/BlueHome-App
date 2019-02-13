@@ -37,4 +37,5 @@
     <string name="give_device_name">Give your new Device a Name:</string>
     <string name="ok">OK</string>
     <string name="save">Save</string>
+    <string name="type">Type</string>
 </resources>

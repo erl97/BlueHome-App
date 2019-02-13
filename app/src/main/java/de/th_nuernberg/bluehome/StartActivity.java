@@ -43,6 +43,9 @@ public class StartActivity extends AppCompatActivity {
         //if(firstStart)
             //showPopup();
 
+        //TODO: Error Check
+
+
     }
 
     private void showPopup() {

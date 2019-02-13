@@ -38,4 +38,5 @@
     <string name="save">Speichern</string>
     <string name="name_device">Gerät bennenen</string>
     <string name="give_device_name">"Geben Sie Ihrem neuen Gerät einen Namen: "</string>
+    <string name="type">Typ</string>
 </resources>

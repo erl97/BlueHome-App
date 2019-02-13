@@ -1,6 +1,7 @@
 package de.th_nuernberg.bluehome;
 
 import android.app.Activity;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ public class DeviceListAdapter extends BaseAdapter {
     private final int VERSION_BIG_SHOWN_NAME = 1;
     private final int VERSION_BIG_MAC_ADDRESS = 2;
     private final int VERSION_BIG_REAL_NAME = 3;
+    private final int VERSION_BIG_REAL_NAME_AND_TYPE = 4;
 
     public DeviceListAdapter(Activity context, ArrayList<BlueHomeDevice> devices) {
 
@@ -84,7 +86,13 @@ public class DeviceListAdapter extends BaseAdapter {
                 macText.setText("" + devices.get(position).getMacAddress() + " / " + devices.get(position).getDeviceName());
                 break;
 
-                default:
+            case VERSION_BIG_REAL_NAME_AND_TYPE:
+                nameText.setText(context.getString(R.string.type) + ": " + devices.get(position).getNodeType() + ", " + devices.get(position).getDeviceName());
+                macText.setText(devices.get(position).getMacAddress());
+                break;
+
+
+            default:
                     nameText.setText(devices.get(position).getShownName());
                     macText.setText("" + devices.get(position).getMacAddress() + " / " + devices.get(position).getDeviceName());
                     break;
