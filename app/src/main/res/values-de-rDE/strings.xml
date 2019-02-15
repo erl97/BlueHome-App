@@ -39,4 +39,5 @@
     <string name="name_device">Gerät bennenen</string>
     <string name="give_device_name">"Geben Sie Ihrem neuen Gerät einen Namen: "</string>
     <string name="type">Typ</string>
+    <string name="error_not_available">Gerät nicht erreichbar</string>
 </resources>

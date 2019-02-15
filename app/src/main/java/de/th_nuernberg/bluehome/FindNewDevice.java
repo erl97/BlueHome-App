@@ -151,6 +151,7 @@ public class FindNewDevice extends AppCompatActivity {
                             {
                                 BlueHomeDevice dev = new BlueHomeDevice(device.getAddress(), device.getName());
                                 dev.setNodeType(Integer.parseInt(device.getName().substring(5, device.getName().length() - 9)));
+                                //dev.setNodeType(1);
                                 Log.i("DEVICE", "Created Device, node type " + dev.getNodeType());
                                 switch (dev.getNodeType()) {
                                     case 1:
@@ -187,7 +188,7 @@ public class FindNewDevice extends AppCompatActivity {
             return true;
         else
             return false;
-
+        //return true;
     }
 
 

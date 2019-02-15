@@ -3,6 +3,7 @@ package de.th_nuernberg.bluehome;
 import android.bluetooth.BluetoothDevice;
 import android.net.MacAddress;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class BlueHomeDevice {
@@ -28,6 +29,8 @@ public class BlueHomeDevice {
         this.deleteActive = dev.isDeleteActive();
         this.toRemove = dev.isToRemove();
     }
+
+
 
     public void setShownName(String shownName) {
         this.shownName = shownName;

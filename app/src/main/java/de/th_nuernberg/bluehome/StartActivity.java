@@ -2,9 +2,11 @@ package de.th_nuernberg.bluehome;
 
 import android.Manifest;
 import android.app.ActionBar;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -17,24 +19,56 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+
+import de.th_nuernberg.bluehome.BlueHomeDatabase.BlueHomeDeviceStorageManager;
 
 public class StartActivity extends AppCompatActivity {
 
     private boolean firstStart = false;
+    private BlueHomeDeviceStorageManager storageManager = new BlueHomeDeviceStorageManager(this);
+    private ArrayList<BlueHomeDevice> devices;
+    private BLEconnectionManager bleman;
+    private ArrayList<ErrorObject> errors = new ArrayList<>();
+    private ListView list;
+    private ErrorListAdapter errorListAdapter;
 
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
     private static final int PERMISSION_REQUEST_WRITE_STORAGE = 2;
     private static final int PERMISSION_REQUEST_BLUETOOTH = 3;
+
+    public static String REFRESH_ACTIVITY = "de.th_nuernberg.bluehome.action.REFRESH_ERROR";
+
+    private class ErrorReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            errors = bleman.getErrors();
+            errorListAdapter.setNewErrorlist(errors);
+            errorListAdapter.notifyDataSetChanged();
+            list.deferNotifyDataSetChanged();
+        }
+    }
+
+    private BroadcastReceiver errorRec = new ErrorReceiver();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(R.string.dashboard);
         setContentView(R.layout.activity_start);
+        list = findViewById(R.id.error_list);
+
+        errorListAdapter = new ErrorListAdapter(this, errors);
+        list.setAdapter(errorListAdapter);
 
         getPermissions();
+
+        bleman = new BLEconnectionManager(StartActivity.this);
 
     }
 
@@ -43,9 +77,25 @@ public class StartActivity extends AppCompatActivity {
         //if(firstStart)
             //showPopup();
 
-        //TODO: Error Check
+        IntentFilter filter = new IntentFilter("ERROR_ACTION");
+        this.registerReceiver(errorRec, filter);
 
+        devices = storageManager.getAllDevices();
+        bleman.readErrors();
+        errors = bleman.getErrors();
+        //TODO: Show List
 
+    }
+
+    protected void onStop() {
+        bleman.closeConnection();
+        super.onStop();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        this.unregisterReceiver(this.errorRec);
     }
 
     private void showPopup() {
@@ -66,6 +116,8 @@ public class StartActivity extends AppCompatActivity {
     }
 
     public void menu1_pressed(View view){
+        Intent intent = new Intent(this, ManAddDev.class);
+        startActivity(intent);
 
     }
 
