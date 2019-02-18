@@ -6,6 +6,11 @@ import android.net.MacAddress;
 import java.util.ArrayList;
 import java.util.Objects;
 
+/**
+ * BlueHomeDevice is the logical clone to a physical BlueHome device. It contains information that is needed to connect to the device.
+ *
+ * @author Philipp Herrmann
+ */
 public class BlueHomeDevice {
     private String address;
     private String deviceName;
@@ -31,44 +36,82 @@ public class BlueHomeDevice {
     }
 
 
-
+    /**
+     * sets the name that is shown in device list and configuration parts of the app.
+     *
+     * @param shownName shown name in devicelist
+     */
     public void setShownName(String shownName) {
         this.shownName = shownName;
     }
 
+    /**
+     * sets the node type. Needed to differ between hardware versions and types
+     *
+     * @param nodeType hardware node type
+     */
     public void setNodeType(int nodeType) {
         this.nodeType = nodeType;
     }
 
+    /**
+     * gets devices' mac address
+     *
+     * @return mac address
+     */
     public String getMacAddress() {
         return address;
     }
 
+    /**
+     * gets real device name. Only for further information. Configuration is based on shown name.
+     *
+     * @return device name
+     */
     public String getDeviceName() {
         return deviceName;
     }
 
+    /**
+     * gets the name which is used in device list and configuration parts
+     *
+     * @return shown name
+     */
     public String getShownName() {
         return shownName;
     }
 
+    /**
+     * gets the node type. Needed to differ between hardware versions and types
+     *
+     * @return hardware node type
+     */
     public int getNodeType() {
         return nodeType;
     }
 
-
+    /**
+     * gets image ressource id. Used for custom images in {@link DeviceList}
+     *
+     * @return image ressource id
+     */
     public int getImgID() {
         return imgID;
     }
 
+    /**
+     * sets image ressource id. Used for custom images in {@link DeviceList}
+     *
+     * @param imgID image ressource id
+     */
     public void setImgID(int imgID) {
         this.imgID = imgID;
     }
 
-    public void setDeleteActive(boolean deleteActive) {
-        this.deleteActive = deleteActive;
-    }
-
+    /**
+     * gets delete active status. used for delete function in {@link DeviceList}
+     * @return
+     */
     public boolean isDeleteActive() {
         return deleteActive;
     }
@@ -76,10 +119,12 @@ public class BlueHomeDevice {
         return toRemove;
     }
 
-    public void setToRemove(boolean toRemove) {
-        this.toRemove = toRemove;
-    }
-
+    /**
+     * equals function for comparing BlueHomeDevice objects
+     *
+     * @param object object to compare against
+     * @return true if object matches, false if not
+     */
     @Override
     public boolean equals(Object object) {
         if(!(object instanceof BlueHomeDevice))

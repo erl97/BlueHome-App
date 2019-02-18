@@ -8,6 +8,11 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+/**
+ * App Settings Activity contains options to import and export configuration files.
+ *
+ * @author Philipp Herrmann
+ */
 public class AppSettings extends AppCompatActivity {
 
     private TextView importView;

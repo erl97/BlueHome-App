@@ -27,12 +27,18 @@ import java.util.ArrayList;
 
 import de.th_nuernberg.bluehome.BlueHomeDatabase.BlueHomeDeviceStorageManager;
 
+/**
+ * StartActivity is the first shown Activity. It contains a dashboard and the main menu. Checks if devices are in range in background.
+ *
+ * @author Philipp Herrmann
+ */
 public class StartActivity extends AppCompatActivity {
 
     private boolean firstStart = false;
     private BlueHomeDeviceStorageManager storageManager = new BlueHomeDeviceStorageManager(this);
     private ArrayList<BlueHomeDevice> devices;
     private BLEconnectionManager bleman;
+    private BLEconnectionManager bleman2;
     private ArrayList<ErrorObject> errors = new ArrayList<>();
     private ListView list;
     private ErrorListAdapter errorListAdapter;
@@ -69,6 +75,7 @@ public class StartActivity extends AppCompatActivity {
         getPermissions();
 
         bleman = new BLEconnectionManager(StartActivity.this);
+        bleman2 = new BLEconnectionManager(StartActivity.this);
 
     }
 
@@ -88,7 +95,7 @@ public class StartActivity extends AppCompatActivity {
     }
 
     protected void onStop() {
-        bleman.closeConnection();
+        //bleman.closeConnection();
         super.onStop();
     }
 
@@ -132,13 +139,18 @@ public class StartActivity extends AppCompatActivity {
     }
 
     public void menu4_pressed(View view){
-
+        byte[] dummy = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};
+        BlueHomeDevice test = new BlueHomeDevice("10:80:E1:00:34:12", "test");
+        bleman2.writeValue(bleman2.UUID_CMD_CMD_CHAR, dummy, test);
     }
 
     public void menu5_pressed(View view){
 
     }
 
+    /**
+     * asks for needed permissions if not already granted
+     */
     private void getPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             // Android M Permission check 

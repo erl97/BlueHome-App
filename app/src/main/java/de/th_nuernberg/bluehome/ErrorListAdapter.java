@@ -12,6 +12,11 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * ErrorListAdapter is used for ListView on {@link StartActivity} to show error states
+ *
+ * @author Philipp Herrmann
+ */
 public class ErrorListAdapter extends BaseAdapter {
     private final Activity context;
     private ArrayList<ErrorObject> errors;
@@ -30,6 +35,11 @@ public class ErrorListAdapter extends BaseAdapter {
 
     }
 
+    /**
+     * exchanges ArrayList of {@link ErrorObject}s to display. ListView needs to be notified after change
+     *
+     * @param errors new ArrayList of ErrorObjects
+     */
     public void setNewErrorlist(ArrayList<ErrorObject> errors) {
         if(errors != null)
             this.errors = errors;
@@ -37,6 +47,11 @@ public class ErrorListAdapter extends BaseAdapter {
             this.errors.clear();
     }
 
+    /**
+     * gets amount of entries
+     *
+     * @return amount of entries
+     */
     public int getCount() {
         return errors.size();
     }
@@ -49,6 +64,14 @@ public class ErrorListAdapter extends BaseAdapter {
         return position;
     }
 
+    /**
+     * gets view of one single entry at position. Called by ListView
+     *
+     * @param position
+     * @param view
+     * @param parent
+     * @return
+     */
     public View getView(int position, View view, ViewGroup parent) {
         String tmpName;
         LayoutInflater inflater=context.getLayoutInflater();

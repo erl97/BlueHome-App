@@ -1,5 +1,10 @@
 package de.th_nuernberg.bluehome;
 
+/**
+ * ErrorObject contains error informations of one {@link BlueHomeDevice}
+ *
+ * @author Philipp Herrmann
+ */
 public class ErrorObject {
     private int errorID;
     private BlueHomeDevice device;

@@ -1,5 +1,11 @@
 package de.th_nuernberg.bluehome.BlueHomeDatabase;
 
+/**
+ * DBConstants contains all constants for Database use.
+ *
+ * @author Philipp Herrmann
+ */
+
 public class DBConstants {
     public static final String DATABASE_NAME = "BlueHome.db";
     public static final String DEVICES_TABLE_NAME = "devices";

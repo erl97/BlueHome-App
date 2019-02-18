@@ -12,6 +12,11 @@ import java.util.ArrayList;
 
 import de.th_nuernberg.bluehome.BlueHomeDevice;
 
+/**
+ * BlueHomeStorageManager manages the databaseconnection for the BlueHome Device table, which contains all devices known to the System.
+ *
+ * @author Philipp Herrmann
+ */
 public class BlueHomeDeviceStorageManager extends SQLiteOpenHelper {
 
 

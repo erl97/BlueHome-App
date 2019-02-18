@@ -15,6 +15,11 @@ import java.util.ArrayList;
 
 import de.th_nuernberg.bluehome.BlueHomeDatabase.BlueHomeDeviceStorageManager;
 
+/**
+ * DeviceList Activity lists all known {@link BlueHomeDevice}s and offers the ability to edit and delete the devices.
+ *
+ * @author Philipp Herrmann
+ */
 public class DeviceList extends AppCompatActivity {
 
     private ListView list;

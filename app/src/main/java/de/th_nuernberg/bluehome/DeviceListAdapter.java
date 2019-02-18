@@ -12,6 +12,11 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+/**
+ * DeviceListAdapter ist used to convert an ArrayList of {@link BlueHomeDevice}s to a showable list with images and formated text.
+ *
+ * @author Philipp Herrmann
+ */
 public class DeviceListAdapter extends BaseAdapter {
 
     private final Activity context;
@@ -21,10 +26,10 @@ public class DeviceListAdapter extends BaseAdapter {
     private boolean deleteActive;
     private int version = 0;
 
-    private final int VERSION_BIG_SHOWN_NAME = 1;
-    private final int VERSION_BIG_MAC_ADDRESS = 2;
-    private final int VERSION_BIG_REAL_NAME = 3;
-    private final int VERSION_BIG_REAL_NAME_AND_TYPE = 4;
+    public final static int VERSION_BIG_SHOWN_NAME = 1;
+    public final static int VERSION_BIG_MAC_ADDRESS = 2;
+    public final static int VERSION_BIG_REAL_NAME = 3;
+    public final static int VERSION_BIG_REAL_NAME_AND_TYPE = 4;
 
     public DeviceListAdapter(Activity context, ArrayList<BlueHomeDevice> devices) {
 
@@ -32,23 +37,48 @@ public class DeviceListAdapter extends BaseAdapter {
         this.devices = devices;
     }
 
+    /**
+     * sets the display version option defined by VERSION tags in this class
+     *
+     * @param ver version to show
+     */
     public void setVersion(int ver) {
         version = ver;
     }
 
+    /**
+     * exchanges the ArrayList which is shown. List has to be notified about dataset changed
+     *
+     * @param devices ArrayList of BlueHome Devices
+     */
     public void setNewDevicelist(ArrayList<BlueHomeDevice> devices) {
         this.devices = devices;
     }
 
 
+    /**
+     * activates the delete checkbox on the list entries
+     *
+     * @param deleteActive true for activate, false for deactivate
+     */
     public void setDeleteActive(boolean deleteActive) {
         this.deleteActive = deleteActive;
     }
 
+    /**
+     * used to determine wether delete checkbox should be active or not
+     *
+     * @return true if delete is active, false if not
+     */
     public boolean isDeleteActive() {
         return deleteActive;
     }
 
+    /**
+     * gets amount of entries
+     *
+     * @return amount of entries
+     */
     public int getCount() {
         return devices.size();
     }
@@ -61,6 +91,14 @@ public class DeviceListAdapter extends BaseAdapter {
         return position;
     }
 
+    /**
+     * returns view for single entry, depending on display version. Called by ListView
+     *
+     * @param position
+     * @param view
+     * @param parent
+     * @return view for single entry
+     */
     public View getView(int position,View view,ViewGroup parent) {
         LayoutInflater inflater=context.getLayoutInflater();
         rowView = inflater.inflate(R.layout.device_row_layout, null, true);
@@ -107,11 +145,6 @@ public class DeviceListAdapter extends BaseAdapter {
 
         return rowView;
 
-    }
-
-    public boolean isChecked() {
-        CheckBox deleteBox = (CheckBox) rowView.findViewById(R.id.device_list_delete);
-        return deleteBox.isChecked();
     }
 
 }

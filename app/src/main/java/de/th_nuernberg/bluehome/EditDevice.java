@@ -17,6 +17,11 @@ import java.util.Arrays;
 
 import de.th_nuernberg.bluehome.BlueHomeDatabase.BlueHomeDeviceStorageManager;
 
+/**
+ * EditDevice Activity offers tools to edit device data like shown name and image
+ *
+ * @author Philipp Herrmann
+ */
 public class EditDevice extends AppCompatActivity {
 
     private EditText shownNameView;

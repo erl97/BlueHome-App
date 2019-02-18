@@ -9,6 +9,11 @@ import android.widget.EditText;
 
 import de.th_nuernberg.bluehome.BlueHomeDatabase.BlueHomeDeviceStorageManager;
 
+/**
+ * ManAddDev Activity allows adding a device to known devices manually. Only for debug use, shoud be hidden in final App
+ *
+ * @author Philipp Herrmann
+ */
 public class ManAddDev extends AppCompatActivity {
 
     private EditText shownNameView;

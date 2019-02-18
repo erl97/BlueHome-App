@@ -38,6 +38,11 @@ import java.util.UUID;
 
 import de.th_nuernberg.bluehome.BlueHomeDatabase.BlueHomeDeviceStorageManager;
 
+/**
+ * FindNewDevice Activity scans the environment to find active BlueHome devices. Results of BLE scan are filtered for BlueHome device feature.
+ *
+ * @author Philipp Herrmann
+ */
 public class FindNewDevice extends AppCompatActivity {
 
     private BluetoothAdapter mBluetoothAdapter;
@@ -116,6 +121,11 @@ public class FindNewDevice extends AppCompatActivity {
     }
 
 
+    /**
+     * starts or stops scan for all BLE devices in range
+     *
+     * @param enable true for start, false for stop
+     */
     private void scanLeDevice(final boolean enable) {
         if (enable) {
             mHandler.postDelayed(new Runnable() {
@@ -182,6 +192,12 @@ public class FindNewDevice extends AppCompatActivity {
                 }
     };
 
+    /**
+     * checks whether given device is a BlueHome device or not
+     *
+     * @param device device to check
+     * @return true for BlueHome device, false if not
+     */
     private boolean deviceIsBlueHome(BluetoothDevice device) {
         if((device.getName() != null) && (device.getName().startsWith(deviceIdStart)) && (device.getName().endsWith(deviceIdEnd)) && (device.getName().startsWith(deviceTypeSpacer, device.getName().length() - (6 + deviceIdEnd.length() + deviceTypeSpacer.length()))))
 
@@ -192,6 +208,9 @@ public class FindNewDevice extends AppCompatActivity {
     }
 
 
+    /**
+     * opens a diaglog to ask if the device should be adopted
+     */
     private void openDialog(final BlueHomeDevice dev) {
 
         AlertDialog alertDialog = new AlertDialog.Builder(this, R.style.AlertDialogStyle).create();
@@ -215,6 +234,9 @@ public class FindNewDevice extends AppCompatActivity {
         alertDialog.show();
     }
 
+    /**
+     * opens a dialog to name the new device. After naming, device gets stored in {@link BlueHomeDeviceStorageManager}
+     */
     private void openNameDialog(BlueHomeDevice dev) {
 
         final BlueHomeDevice device = new BlueHomeDevice(dev);

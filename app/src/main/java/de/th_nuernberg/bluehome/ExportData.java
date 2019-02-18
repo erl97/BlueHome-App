@@ -22,6 +22,11 @@ import javax.xml.XMLConstants;
 import de.th_nuernberg.bluehome.BlueHomeDatabase.BlueHomeDeviceStorageManager;
 import lib.folderpicker.FolderPicker;
 
+/**
+ * Export Data offers an export function for configuration information
+ *
+ * @author Philipp Herrmann
+ */
 public class ExportData extends AppCompatActivity {
 
     private Button selectButtonView;
@@ -56,6 +61,12 @@ public class ExportData extends AppCompatActivity {
         }
     }
 
+    /**
+     * creates XML String to write into file
+     *
+     * @return XML String
+     * @throws Exception
+     */
     private String getExportData() throws Exception{
         XmlSerializer xml = Xml.newSerializer();
         BlueHomeDeviceStorageManager db = new BlueHomeDeviceStorageManager(this);

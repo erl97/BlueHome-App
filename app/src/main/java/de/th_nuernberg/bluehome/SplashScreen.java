@@ -19,6 +19,11 @@ import java.util.TimerTask;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 
+/**
+ * Shows a Splashscreen on App start. Duration can be edited.
+ *
+ * @author Philipp Herrmann
+ */
 public class SplashScreen extends AppCompatActivity {
 
     @Override
@@ -42,6 +47,10 @@ public class SplashScreen extends AppCompatActivity {
         }), splashScreenDuration);
     }
 
+    /**
+     * Change returnvalue for Splashscreen duration
+     * @return Splashscreen duration
+     */
     private final long getSplashScreenDuration() {
         return 300L;
     }

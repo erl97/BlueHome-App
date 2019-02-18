@@ -20,14 +20,23 @@ import de.th_nuernberg.bluehome.BlueHomeDatabase.BlueHomeDeviceStorageManager;
 
 //TODO: implement Callback
 
+/**
+ * BLEConnectionManager manages Bluetooth Communication between BlueHome devices and App. Is used as an abstraction Layer for communication.
+ *
+ * @author Philipp Herrmann
+ */
+
 public class BLEconnectionManager {
 
-    private BluetoothGatt mGatt;
+    //private BluetoothGatt mGatt;
     private BluetoothAdapter mBluetoothAdapter;
     private Context mContext;
     private BlueHomeDeviceStorageManager storageManager;
     private ArrayList<ErrorObject> errors = new ArrayList<>();
     private ArrayList<BluetoothGatt> connected = new ArrayList<>();
+    private int counter = 0;
+
+    private final static String DEBUG_TAG = new String("BLEMAN");
 
     public final static UUID UUID_CMD_SERV =        UUID.fromString("02366E80-CF3A-11E1-9AB4-0002A5D5C51A");
     public final static UUID UUID_CMD_CMD_CHAR =    UUID.fromString("02366E80-CF3A-11E1-9AB4-0002A5D5C51B");
@@ -39,10 +48,16 @@ public class BLEconnectionManager {
     public final static UUID UUID_INFO_SWV_CHAR =   UUID.fromString("02366E80-CF3A-11E1-9AB4-0002A5D5C52D");
     public final static UUID UUID_INFO_NODE_CHAR =  UUID.fromString("02366E80-CF3A-11E1-9AB4-0002A5D5C52E");
 
+    private UUID tmp_write_to;
+    private UUID tmp_write_to_service;
+
     public final int BLE_OK = 0;
     public final int BLE_FAIL = -1;
 
     private boolean FLAG_READ_ERROR = false;
+    private boolean FLAG_WRITE_VALUE = false;
+
+    private byte[] tmp_value;
 
     BLEconnectionManager(Context mContext){
         this.mContext = mContext;
@@ -51,27 +66,47 @@ public class BLEconnectionManager {
         storageManager = new BlueHomeDeviceStorageManager(mContext);
     }
 
-    public void openConnection(BlueHomeDevice device) {
+    /**
+     * Opens an Connection to a BlueHomeDevice. Used in other methods in this manager.
+     *
+     * @param device BlueHomeDevice to connect to
+     * @return BLE_OK in case of success or BLE_FAIL when the manager already handles an active connection.
+     */
+    private int openConnection(BlueHomeDevice device) {
         BluetoothDevice dev;
-        if(mGatt == null) {
+        if(connected.size() == 0) {
             dev = mBluetoothAdapter.getRemoteDevice(device.getMacAddress());
-            mGatt = dev.connectGatt(mContext, false, gattCallback);
-            Log.i("OPEN", "Connecting to " + dev.getAddress());
+            dev.connectGatt(mContext, false, gattCallback, BluetoothDevice.TRANSPORT_LE);
+            Log.i(DEBUG_TAG, "Connecting to " + dev.getAddress());
+            return BLE_OK;
+        } else {
+            Log.i(DEBUG_TAG, "Can't Connect!");
+            return BLE_FAIL;
         }
     }
 
-    public void closeConnection() {
-        if(mGatt != null)
-            mGatt.disconnect();
+    /**
+     * closes given gatt connection
+     *
+     * @param gatt connection handle to close
+     */
+    private void closeConnection(BluetoothGatt gatt) {
+        if(gatt != null)
+            gatt.disconnect();
     }
 
+    /**
+     * Starts error readout for all known devices given by {@link BlueHomeDeviceStorageManager}. Scan results are indicated by 'ERROR_ACTION' Broadcast.
+     *
+     * @return BLE_OK in case of success
+     */
     public int readErrors(){
         ArrayList<BlueHomeDevice> devs = storageManager.getAllDevices();
         if(devs.size() > 0)
         {
             FLAG_READ_ERROR = true;
             for(int i = 0; i < devs.size(); i++) {
-                Log.i("OPEN_DEV", ""+i);
+                Log.i(DEBUG_TAG, "Open dev "+i);
                 openConnection(devs.get(i));
             }
         }
@@ -79,30 +114,65 @@ public class BLEconnectionManager {
         return BLE_OK;
     }
 
+    /**
+     * Starts asyncron writing a value to given characteristic on given {@link BlueHomeDevice}
+     *
+     * @param uuid UUID to write to
+     * @param values values to write. Up to 20 bytes
+     * @param dev BlueHome Device to write to
+     */
+    public void writeValue(UUID uuid, byte[] values, BlueHomeDevice dev){
+        tmp_write_to = uuid;
+        FLAG_WRITE_VALUE = true;
+        tmp_value = values;
+        if(uuid.toString().substring(uuid.toString().length()-2, uuid.toString().length()-1).equals("1"))
+            tmp_write_to_service = UUID_CMD_SERV;
+        if(uuid.toString().substring(uuid.toString().length()-2, uuid.toString().length()-1).equals("2"))
+            tmp_write_to_service = UUID_INFO_SERV;
+        openConnection(dev);
+        Log.i(DEBUG_TAG, "Open Connection");
+    }
+
     public ArrayList<ErrorObject> getErrors(){
         return errors;
     }
 
-    public void wirteToDevice(BlueHomeDevice device, ArrayList<Byte> data) {
+   /* public void wirteToDevice(BlueHomeDevice device, ArrayList<Byte> data) {
 
-    }
+    }*/
 
     private final BluetoothGattCallback gattCallback = new BluetoothGattCallback() {
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             ErrorObject tmp;
             BlueHomeDevice tmpDev;
-            Log.i("onConnectionStateChange", "Status: " + status);
+
+            Log.i(DEBUG_TAG, "Connection State Changed: State: " + status);
             switch (newState) {
                 case BluetoothProfile.STATE_CONNECTED:  //Board Connected, Start app
-                    Log.i("gattCallback", "STATE_CONNECTED");
+                    Log.i(DEBUG_TAG, "STATE_CONNECTED");
                     connected.add(gatt);
                     gatt.discoverServices();
-                    Log.i("gattCallback", "Start scan");
+                    Log.i(DEBUG_TAG, "Start scan");
 
                     break;
                 case BluetoothProfile.STATE_DISCONNECTED:  //Connection Lost
-                    Log.e("gattCallback", "STATE_DISCONNECTED");
+                    Log.e(DEBUG_TAG, "STATE_DISCONNECTED");
+                    if(status == 133 && counter < 2) {
+                        try {
+                            //set time in mili
+                            Thread.sleep(60);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        counter++;
+                        gatt.connect();
+                        Log.i(DEBUG_TAG, "retrying");
+                        break;
+                    } else {
+                        counter = 0;
+                    }
                     if(connected.contains(gatt)){
                         connected.remove(gatt);
                     } else {
@@ -113,11 +183,12 @@ public class BLEconnectionManager {
                             Intent in = new Intent("ERROR_ACTION");
                             mContext.sendBroadcast(in);
                         }
+                        connected.remove(gatt);
                     }
 
                     break;
                 default:
-                    Log.e("gattCallback", "STATE_OTHER");
+                    Log.e(DEBUG_TAG, "STATE_OTHER");
             }
 
         }
@@ -125,30 +196,41 @@ public class BLEconnectionManager {
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
             List<BluetoothGattService> services = gatt.getServices();
-            Log.i("onServicesDiscovered", services.toString());
+            Log.i(DEBUG_TAG, "Services Discovered " + services.toString());
             if(FLAG_READ_ERROR) {
                 for (int i = 0; i < services.size(); i++) {
                     for (int j = 0; j < services.get(i).getCharacteristics().size(); j++) {
                         if (services.get(i).getCharacteristics().get(j).getUuid().equals(UUID_INFO_ERROR_CHAR)) {
-                            mGatt.readCharacteristic(services.get(i).getCharacteristics().get(j));
-                            Log.i("UUID", "" + services.get(i).getCharacteristics().get(j).getUuid());
+                            gatt.readCharacteristic(services.get(i).getCharacteristics().get(j));
+                            Log.i(DEBUG_TAG, "UUID " + services.get(i).getCharacteristics().get(j).getUuid());
                         }
                     }
                 }
             }
-            Log.i("onServicesDiscovered", ""+services.size());
+            if(FLAG_WRITE_VALUE){
+                Log.i(DEBUG_TAG, "starting write...");
+                if(tmp_value.length > 0) {
+                    gatt.getService(tmp_write_to_service).getCharacteristic(tmp_write_to).setValue(tmp_value);
+                    gatt.getService(tmp_write_to_service).getCharacteristic(tmp_write_to).setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
+                    boolean state = gatt.writeCharacteristic(gatt.getService(tmp_write_to_service).getCharacteristic(tmp_write_to));
+                    Log.i(DEBUG_TAG, "write state "+state);
+                }
+            }
+            Log.i(DEBUG_TAG, ""+services.size());
         }
 
         @Override
         public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+            //super.onCharacteristicRead(gatt, characteristic, status);
             ErrorObject tmp;
             BlueHomeDevice tmpDev;
-            Log.i("onCharacteristicRead", characteristic.toString());
-            Log.i("onCharacteristicRead", characteristic.getUuid().toString());
-            Log.i("onCharacteristicRead", UUID_INFO_ERROR_CHAR.toString());
-            Log.i("onCharacteristicRead", ""+characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8,0));
-            Log.i("onCharacteristicRead", gatt.getDevice().getAddress().toString());
+            Log.i(DEBUG_TAG, characteristic.toString());
+            Log.i(DEBUG_TAG, characteristic.getUuid().toString());
+            Log.i(DEBUG_TAG, UUID_INFO_ERROR_CHAR.toString());
+            Log.i(DEBUG_TAG, ""+characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8,0));
+            Log.i(DEBUG_TAG, gatt.getDevice().getAddress().toString());
             if(characteristic.getUuid().equals(UUID_INFO_ERROR_CHAR)) {
+                Log.i(DEBUG_TAG, "read error Characteristik");
                 if(characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8,0) != ErrorObject.ERROR_NO_ERROR){
                     tmpDev = storageManager.getDevice(gatt.getDevice().getAddress());
                     if(tmpDev != null) {
@@ -156,11 +238,22 @@ public class BLEconnectionManager {
                         errors.add(tmp);
                         Intent in = new Intent("ERROR_ACTION");
                         mContext.sendBroadcast(in);
+                        Log.i(DEBUG_TAG, "Error read: " + tmp.getErrorID());
                     }
                 }
-                gatt.disconnect();
+                closeConnection(gatt);
             }
         }
 
+        @Override
+        public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+                Log.i(DEBUG_TAG, "write complete, disconnect...");
+                closeConnection(gatt);
+            } else {
+                Log.e(DEBUG_TAG, "write failed, code: " + status);
+                closeConnection(gatt);
+            }
+        }
     };
 }
