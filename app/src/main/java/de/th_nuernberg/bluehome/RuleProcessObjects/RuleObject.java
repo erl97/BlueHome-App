@@ -9,9 +9,29 @@ package de.th_nuernberg.bluehome.RuleProcessObjects;
 
 public class RuleObject {
 
+    private byte ruleMemID;
     private byte actionMemID;
     private SourceObject toComp;
     private byte[] paramComp = new byte[20];
+
+
+    /**
+     * gets Rule ID. This ID identifies the position of the Rule in devices memory
+     *
+     * @return rule ID
+     */
+    public byte getRuleMemID() {
+        return ruleMemID;
+    }
+
+    /**
+     * sets Rule ID. This ID identifies the position of the Rule in devices memory
+     *
+     * @param ruleMemID rule ID
+     */
+    public void setRuleMemID(byte ruleMemID) {
+        this.ruleMemID = ruleMemID;
+    }
 
     /**
      * gets Action Memory ID. Action Memory ID descripes where to put the action packet in BlueHome devices memory.
@@ -66,7 +86,7 @@ public class RuleObject {
         this.paramComp = paramComp;
     }
 
-    RuleObject(){
+    public RuleObject(){
 
     }
 

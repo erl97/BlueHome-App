@@ -3,6 +3,7 @@ package de.th_nuernberg.bluehome;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +16,13 @@ import android.widget.TextView;
 
 import java.util.Arrays;
 
+import de.th_nuernberg.bluehome.BLEManagement.BLEBufferElement;
+import de.th_nuernberg.bluehome.BLEManagement.BLEDataExchangeManager;
 import de.th_nuernberg.bluehome.BlueHomeDatabase.BlueHomeDeviceStorageManager;
+import de.th_nuernberg.bluehome.RuleProcessObjects.ActionObject;
+import de.th_nuernberg.bluehome.RuleProcessObjects.RPC;
+import de.th_nuernberg.bluehome.RuleProcessObjects.RuleObject;
+import de.th_nuernberg.bluehome.RuleProcessObjects.SourceObject;
 
 /**
  * EditDevice Activity offers tools to edit device data like shown name and image
@@ -32,6 +39,7 @@ public class EditDevice extends AppCompatActivity {
     Integer[] spinnerImages;
     private BlueHomeDevice toEdit;
     private BlueHomeDeviceStorageManager db = new BlueHomeDeviceStorageManager(this);
+    private BLEDataExchangeManager bleman = (BLEDataExchangeManager) this.getApplication();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,9 +79,43 @@ public class EditDevice extends AppCompatActivity {
             }
         });
 
-
     }
 
+    public void writeRule(View view){
+        SourceObject tmpSource = new SourceObject();
+        byte[] tmpBytes = {1,2,3,4,5,6};
+        byte[] tmpCases = {RPC.COMP_EQUALS, RPC.COMP_SMALLER_EQUAL, RPC.COMP_DOESNT_MATTER, RPC.COMP_DOESNT_MATTER, RPC.COMP_DOESNT_MATTER, RPC.COMP_DOESNT_MATTER};
+        RuleObject rule = new RuleObject();
+        rule.setActionMemID((byte)1);
+        rule.setParamComp(tmpCases);
+        rule.setRuleMemID((byte)5);
+        rule.setToComp(tmpSource);
+        rule.getToComp().setParams(tmpBytes);
+        rule.getToComp().setSourceID((byte)2);
+        rule.getToComp().setSourceSAM(RPC.SAM_BUTTON);
+        rule.getToComp().setParamNum((byte)6);
+
+        //Log.i("StartAct", ""+bleman.writeRule(toEdit, rule));
+    }
+
+    public void writeAction(View view) {
+        ActionObject tmpAct = new ActionObject();
+        byte[] tmpBytes = {1,2,3,4,5,6};
+        tmpAct.setActionID((byte)1);
+        tmpAct.setActionMemID((byte)5);
+        tmpAct.setActionSAM((byte)3);
+        tmpAct.setParam(tmpBytes);
+        tmpAct.setParamMask(0b00000000000000000000101010101010);
+        tmpAct.setParamNum((byte)6);
+
+        //bleman.writeAction(toEdit, tmpAct);
+        Log.i("paramPart", "" + tmpAct.getMaskPart(0));
+
+
+
+        bleman.addToBuffer(new BLEBufferElement(toEdit, tmpBytes, BLEDataExchangeManager.UUID_CMD_SERV, BLEDataExchangeManager.UUID_CMD_CMD_CHAR, "FAIL"));
+
+    }
 
     protected class ImageSpinnerAdapter extends ArrayAdapter {
 
@@ -105,6 +147,7 @@ public class EditDevice extends AppCompatActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             return getCustomView(position, convertView, parent);
         }
+
 
     }
 }

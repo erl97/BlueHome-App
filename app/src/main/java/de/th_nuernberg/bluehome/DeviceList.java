@@ -45,7 +45,7 @@ public class DeviceList extends AppCompatActivity {
         devices = storageManager.getAllDevices();
 
         list_adapter = new DeviceListAdapter(this, devices);
-        list.setAdapter(list_adapter);
+              list.setAdapter(list_adapter);
 
 
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {

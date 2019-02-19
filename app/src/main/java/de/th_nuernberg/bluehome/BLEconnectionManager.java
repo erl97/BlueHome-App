@@ -16,7 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import de.th_nuernberg.bluehome.BLEManagement.BLEBufferElement;
+import de.th_nuernberg.bluehome.BLEManagement.ErrorObject;
 import de.th_nuernberg.bluehome.BlueHomeDatabase.BlueHomeDeviceStorageManager;
+import de.th_nuernberg.bluehome.RuleProcessObjects.ActionObject;
+import de.th_nuernberg.bluehome.RuleProcessObjects.RPC;
+import de.th_nuernberg.bluehome.RuleProcessObjects.RuleObject;
 
 //TODO: implement Callback
 
@@ -38,26 +43,44 @@ public class BLEconnectionManager {
 
     private final static String DEBUG_TAG = new String("BLEMAN");
 
-    public final static UUID UUID_CMD_SERV =        UUID.fromString("02366E80-CF3A-11E1-9AB4-0002A5D5C51A");
-    public final static UUID UUID_CMD_CMD_CHAR =    UUID.fromString("02366E80-CF3A-11E1-9AB4-0002A5D5C51B");
-    public final static UUID UUID_CMD_POLL_CHAR =   UUID.fromString("02366E80-CF3A-11E1-9AB4-0002A5D5C51C");
+    public final static UUID UUID_CMD_SERV =            UUID.fromString("02366E80-CF3A-11E1-9AB4-0002A5D5C51A");
+    public final static UUID UUID_CMD_CMD_CHAR =        UUID.fromString("02366E80-CF3A-11E1-9AB4-0002A5D5C51B");
 
-    public final static UUID UUID_INFO_SERV =       UUID.fromString("02366E80-CF3A-11E1-9AB4-0002A5D5C52A");
-    public final static UUID UUID_INFO_ERROR_CHAR = UUID.fromString("02366E80-CF3A-11E1-9AB4-0002A5D5C52B");
-    public final static UUID UUID_INFO_HWV_CHAR =   UUID.fromString("02366E80-CF3A-11E1-9AB4-0002A5D5C52C");
-    public final static UUID UUID_INFO_SWV_CHAR =   UUID.fromString("02366E80-CF3A-11E1-9AB4-0002A5D5C52D");
-    public final static UUID UUID_INFO_NODE_CHAR =  UUID.fromString("02366E80-CF3A-11E1-9AB4-0002A5D5C52E");
+    public final static UUID UUID_INFO_SERV =           UUID.fromString("02366E80-CF3A-11E1-9AB4-0002A5D5C52A");
+    public final static UUID UUID_INFO_ERROR_CHAR =     UUID.fromString("02366E80-CF3A-11E1-9AB4-0002A5D5C52B");
+    public final static UUID UUID_INFO_HWV_CHAR =       UUID.fromString("02366E80-CF3A-11E1-9AB4-0002A5D5C52C");
+    public final static UUID UUID_INFO_SWV_CHAR =       UUID.fromString("02366E80-CF3A-11E1-9AB4-0002A5D5C52D");
+    public final static UUID UUID_INFO_NODE_CHAR =      UUID.fromString("02366E80-CF3A-11E1-9AB4-0002A5D5C52E");
+
+    public final static UUID UUID_DIRECT_SERV =         UUID.fromString("02366E80-CF3A-11E1-9AB4-0002A5D5C53A");
+    public final static UUID UUID_DIRECT_PARAM =        UUID.fromString("02366E80-CF3A-11E1-9AB4-0002A5D5C53B");
+    public final static UUID UUID_DIRECT_PARAMCOMP =    UUID.fromString("02366E80-CF3A-11E1-9AB4-0002A5D5C53C");
+    public final static UUID UUID_DIRECT_OPTIONS =      UUID.fromString("02366E80-CF3A-11E1-9AB4-0002A5D5C53D");
 
     private UUID tmp_write_to;
     private UUID tmp_write_to_service;
 
-    public final int BLE_OK = 0;
-    public final int BLE_FAIL = -1;
+    public final static int BLE_FALSE = 1;
+    public final static int BLE_OK = 0;
+    public final static int BLE_FAIL = -1;
+    public final static int BLE_BUSY = -2;
 
     private boolean FLAG_READ_ERROR = false;
-    private boolean FLAG_WRITE_VALUE = false;
+    private boolean FLAG_WRITE_CMD = false;
+    private boolean FLAG_WRITE_DIRECT = false;
 
-    private byte[] tmp_value;
+    private boolean FLAG_MANAGER_BUSY = false;
+
+    private int FLAG_WRITE_OPT_COMPLETE = BLE_FALSE;
+    private int FLAG_WRITE_PARAM_COMPLETE = BLE_FALSE;
+    private int FLAG_WRITE_PARAMCOMP_COMPLETE = BLE_FALSE;
+
+    private byte[] tmpOptCmd;
+    private byte[] tmpParam;
+    private byte[] tmpParamComp;
+
+    ArrayList<BLEBufferElement> buffer = new ArrayList<>();
+
 
     BLEconnectionManager(Context mContext){
         this.mContext = mContext;
@@ -101,17 +124,38 @@ public class BLEconnectionManager {
      * @return BLE_OK in case of success
      */
     public int readErrors(){
+        if(FLAG_MANAGER_BUSY)
+            return BLE_BUSY;
         ArrayList<BlueHomeDevice> devs = storageManager.getAllDevices();
+        FLAG_MANAGER_BUSY = true;
         if(devs.size() > 0)
         {
             FLAG_READ_ERROR = true;
             for(int i = 0; i < devs.size(); i++) {
                 Log.i(DEBUG_TAG, "Open dev "+i);
-                openConnection(devs.get(i));
+                if(openConnection(devs.get(i)) == BLE_FAIL)
+                    return BLE_FAIL;
             }
         }
 
         return BLE_OK;
+    }
+
+    /**
+     * searches for Service UUID belonging to given Characteristic UUID
+     *
+     * @param charUuid
+     * @return Service UUID for charUuid
+     */
+    private UUID getServUUID(UUID charUuid){
+        if(charUuid.toString().substring(charUuid.toString().length()-2, charUuid.toString().length()-1).equals("1"))
+            return UUID_CMD_SERV;
+        if(charUuid.toString().substring(charUuid.toString().length()-2, charUuid.toString().length()-1).equals("2"))
+            return UUID_INFO_SERV;
+        if(charUuid.toString().substring(charUuid.toString().length()-2, charUuid.toString().length()-1).equals("3"))
+            return UUID_DIRECT_SERV;
+
+        return null;
     }
 
     /**
@@ -121,25 +165,63 @@ public class BLEconnectionManager {
      * @param values values to write. Up to 20 bytes
      * @param dev BlueHome Device to write to
      */
-    public void writeValue(UUID uuid, byte[] values, BlueHomeDevice dev){
+    public int writeValue(UUID uuid, byte[] values, BlueHomeDevice dev){
+        if(FLAG_MANAGER_BUSY)
+            return BLE_BUSY;
         tmp_write_to = uuid;
-        FLAG_WRITE_VALUE = true;
-        tmp_value = values;
-        if(uuid.toString().substring(uuid.toString().length()-2, uuid.toString().length()-1).equals("1"))
-            tmp_write_to_service = UUID_CMD_SERV;
-        if(uuid.toString().substring(uuid.toString().length()-2, uuid.toString().length()-1).equals("2"))
-            tmp_write_to_service = UUID_INFO_SERV;
-        openConnection(dev);
+        FLAG_WRITE_CMD = true;
+        tmpOptCmd = values;
+        FLAG_MANAGER_BUSY = true;
+        tmp_write_to_service = getServUUID(uuid);
+        if(tmp_write_to_service == null)
+            return BLE_FAIL;
         Log.i(DEBUG_TAG, "Open Connection");
+        return openConnection(dev);
     }
 
     public ArrayList<ErrorObject> getErrors(){
         return errors;
     }
 
-   /* public void wirteToDevice(BlueHomeDevice device, ArrayList<Byte> data) {
+    public int writeRule(BlueHomeDevice dev, RuleObject rule){
+        if(FLAG_MANAGER_BUSY)
+            return BLE_BUSY;
+        FLAG_MANAGER_BUSY = true;
+        FLAG_WRITE_DIRECT = true;
+        tmpParam = rule.getToComp().getParams();
+        tmpParamComp = rule.getParamComp();
+        tmpOptCmd = new byte[20];
+        tmpOptCmd[0] = RPC.SAM_PROG;
+        tmpOptCmd[1] = RPC.PROG_ACT_ID_WRITE_RULE;
+        tmpOptCmd[2] = rule.getActionMemID();
+        tmpOptCmd[3] = rule.getRuleMemID();
+        tmpOptCmd[4] = rule.getToComp().getSourceSAM();
+        tmpOptCmd[5] = rule.getToComp().getSourceID();
+        tmpOptCmd[6] = rule.getToComp().getParamNum();
+        return openConnection(dev);
+    }
 
-    }*/
+    public int writeAction(BlueHomeDevice dev, ActionObject act){
+        if(FLAG_MANAGER_BUSY)
+            return BLE_BUSY;
+        FLAG_MANAGER_BUSY = true;
+        FLAG_WRITE_DIRECT = true;
+        tmpParam = act.getParam();
+        tmpParamComp = new byte[1];
+        tmpParamComp[0] = 0;
+        tmpOptCmd = new byte[20];
+        tmpOptCmd[0] = RPC.SAM_PROG;
+        tmpOptCmd[1] = RPC.PROG_ACT_ID_WRITE_ACTION;
+        tmpOptCmd[2] = act.getActionMemID();
+        tmpOptCmd[3] = act.getActionSAM();
+        tmpOptCmd[4] = act.getActionID();
+        tmpOptCmd[5] = act.getMaskPart(0);
+        tmpOptCmd[6] = act.getMaskPart(1);
+        tmpOptCmd[7] = act.getMaskPart(2);
+        tmpOptCmd[8] = act.getMaskPart(3);
+        tmpOptCmd[9] = act.getParamNum();
+        return openConnection(dev);
+    }
 
     private final BluetoothGattCallback gattCallback = new BluetoothGattCallback() {
         @Override
@@ -175,6 +257,7 @@ public class BLEconnectionManager {
                     }
                     if(connected.contains(gatt)){
                         connected.remove(gatt);
+                        FLAG_MANAGER_BUSY = false;
                     } else {
                         tmpDev = storageManager.getDevice(gatt.getDevice().getAddress());
                         if(tmpDev != null) {
@@ -184,6 +267,8 @@ public class BLEconnectionManager {
                             mContext.sendBroadcast(in);
                         }
                         connected.remove(gatt);
+
+                        FLAG_MANAGER_BUSY = false;
                     }
 
                     break;
@@ -207,14 +292,27 @@ public class BLEconnectionManager {
                     }
                 }
             }
-            if(FLAG_WRITE_VALUE){
+            if(FLAG_WRITE_CMD){
                 Log.i(DEBUG_TAG, "starting write...");
-                if(tmp_value.length > 0) {
-                    gatt.getService(tmp_write_to_service).getCharacteristic(tmp_write_to).setValue(tmp_value);
+                if(tmpOptCmd.length > 0) {
+                    gatt.getService(tmp_write_to_service).getCharacteristic(tmp_write_to).setValue(tmpOptCmd);
                     gatt.getService(tmp_write_to_service).getCharacteristic(tmp_write_to).setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
                     boolean state = gatt.writeCharacteristic(gatt.getService(tmp_write_to_service).getCharacteristic(tmp_write_to));
                     Log.i(DEBUG_TAG, "write state "+state);
                 }
+            }
+
+            if(FLAG_WRITE_DIRECT){
+                Log.i(DEBUG_TAG, "starting direct command write");
+                FLAG_WRITE_OPT_COMPLETE = BLE_FALSE;
+                FLAG_WRITE_PARAM_COMPLETE = BLE_FALSE;
+                FLAG_WRITE_PARAMCOMP_COMPLETE = BLE_FALSE;
+                gatt.getService(UUID_DIRECT_SERV).getCharacteristic(UUID_DIRECT_PARAMCOMP).setValue(tmpParamComp);
+                gatt.getService(UUID_DIRECT_SERV).getCharacteristic(UUID_DIRECT_PARAM).setValue(tmpParam);
+                gatt.getService(UUID_DIRECT_SERV).getCharacteristic(UUID_DIRECT_OPTIONS).setValue(tmpOptCmd);
+                boolean state1 = gatt.writeCharacteristic(gatt.getService(UUID_DIRECT_SERV).getCharacteristic(UUID_DIRECT_PARAMCOMP));
+                boolean state2 = gatt.writeCharacteristic(gatt.getService(UUID_DIRECT_SERV).getCharacteristic(UUID_DIRECT_PARAM));
+                boolean state3 = gatt.writeCharacteristic(gatt.getService(UUID_DIRECT_SERV).getCharacteristic(UUID_DIRECT_OPTIONS));
             }
             Log.i(DEBUG_TAG, ""+services.size());
         }
@@ -247,13 +345,51 @@ public class BLEconnectionManager {
 
         @Override
         public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-            if (status == BluetoothGatt.GATT_SUCCESS) {
-                Log.i(DEBUG_TAG, "write complete, disconnect...");
-                closeConnection(gatt);
-            } else {
-                Log.e(DEBUG_TAG, "write failed, code: " + status);
-                closeConnection(gatt);
+            if(FLAG_WRITE_DIRECT){
+                if(characteristic.getUuid().equals(UUID_DIRECT_OPTIONS)) {
+                    if (status == BluetoothGatt.GATT_SUCCESS)
+                        FLAG_WRITE_OPT_COMPLETE = BLE_OK;
+                    else
+                        FLAG_WRITE_OPT_COMPLETE = BLE_FAIL;
+                }
+
+                if(characteristic.getUuid().equals(UUID_DIRECT_PARAM)) {
+                    if (status == BluetoothGatt.GATT_SUCCESS)
+                        FLAG_WRITE_PARAM_COMPLETE = BLE_OK;
+                    else
+                        FLAG_WRITE_PARAM_COMPLETE = BLE_FAIL;
+                }
+
+                if(characteristic.getUuid().equals(UUID_DIRECT_PARAMCOMP)) {
+                    if (status == BluetoothGatt.GATT_SUCCESS)
+                        FLAG_WRITE_PARAMCOMP_COMPLETE = BLE_OK;
+                    else
+                        FLAG_WRITE_PARAMCOMP_COMPLETE = BLE_FAIL;
+                }
+
+                if(FLAG_WRITE_OPT_COMPLETE == BLE_OK && FLAG_WRITE_PARAMCOMP_COMPLETE == BLE_OK && FLAG_WRITE_PARAM_COMPLETE == BLE_OK){
+                    Log.i(DEBUG_TAG, "direct write complete, disconnect...");
+                    FLAG_WRITE_DIRECT = false;
+                    closeConnection(gatt);
+                }
+
+                if(FLAG_WRITE_OPT_COMPLETE == BLE_FAIL || FLAG_WRITE_PARAMCOMP_COMPLETE == BLE_FAIL || FLAG_WRITE_PARAM_COMPLETE == BLE_FAIL) {
+                    Log.i(DEBUG_TAG, "direct write failed");
+                    FLAG_WRITE_DIRECT = false;
+                    closeConnection(gatt);
+                }
             }
+            if(FLAG_WRITE_CMD){
+                if (status == BluetoothGatt.GATT_SUCCESS) {
+                    Log.i(DEBUG_TAG, "write complete, disconnect...");
+                    closeConnection(gatt);
+                } else {
+                    Log.e(DEBUG_TAG, "write failed, code: " + status);
+                    closeConnection(gatt);
+                }
+                FLAG_WRITE_CMD = false;
+            }
+
         }
     };
 }

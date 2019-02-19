@@ -1,4 +1,6 @@
-package de.th_nuernberg.bluehome;
+package de.th_nuernberg.bluehome.BLEManagement;
+
+import de.th_nuernberg.bluehome.BlueHomeDevice;
 
 /**
  * ErrorObject contains error informations of one {@link BlueHomeDevice}

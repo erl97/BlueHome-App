@@ -61,7 +61,7 @@ public class SourceObject {
         }
     }
 
-    SourceObject(){
+    public SourceObject(){
 
     }
 
