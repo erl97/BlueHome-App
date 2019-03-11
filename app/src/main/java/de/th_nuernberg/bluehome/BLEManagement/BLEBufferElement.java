@@ -7,14 +7,21 @@ import java.util.UUID;
 import de.th_nuernberg.bluehome.BlueHomeDevice;
 
 public class BLEBufferElement {
-    public final static int READ_DEVICE = 0;
-    public final static int WRITE_DEVICE = 1;
+    public final static String READ_DEVICE = "READ_DEVICE";
+    public final static String WRITE_DEVICE = "WRITE_DEVICE";
+
+    public final static String TAG_DEV_MAC = "DEV_MAC";
+    public final static String TAG_DATA = "DATA";
+    public final static String TAG_CHAR_UUID = "CHAR_UUID";
+    public final static String TAG_SERV_UUID = "SERV_UUID";
+    public final static String TAG_BROAD_READ = "BROAD_READ";
+    public final static String TAG_BROAD_ERROR = "BROAD_ERROR";
 
     private BlueHomeDevice dev;
     private byte[] data;
     private UUID charUuid;
     private UUID servUuid;
-    private int operation;
+    private String operation;
     private String broadcastOnRead;
     private String broadcastOnConnectionError;
 
@@ -33,6 +40,7 @@ public class BLEBufferElement {
         this.servUuid = servUuid;
         this.broadcastOnRead = broadcastOnRead;
         this.broadcastOnConnectionError = broadcastOnConnectionError;
+        this.operation = READ_DEVICE;
     }
 
 
@@ -52,7 +60,7 @@ public class BLEBufferElement {
         return dev;
     }
 
-    public int getOperation() {
+    public String getOperation() {
         return operation;
     }
 

@@ -13,6 +13,7 @@ import android.os.Build;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import de.th_nuernberg.bluehome.BLEManagement.BLEBufferElement;
 import de.th_nuernberg.bluehome.BLEManagement.BLEDataExchangeManager;
 import de.th_nuernberg.bluehome.BLEManagement.ErrorObject;
 import de.th_nuernberg.bluehome.BlueHomeDatabase.BlueHomeDeviceStorageManager;
@@ -39,7 +41,7 @@ public class StartActivity extends AppCompatActivity {
     private ArrayList<ErrorObject> errors = new ArrayList<>();
     private ListView list;
     private ErrorListAdapter errorListAdapter;
-    private BLEDataExchangeManager bleman = (BLEDataExchangeManager) this.getApplication();
+    private BLEDataExchangeManager bleman = new BLEDataExchangeManager();
 
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
     private static final int PERMISSION_REQUEST_WRITE_STORAGE = 2;
@@ -141,13 +143,14 @@ public class StartActivity extends AppCompatActivity {
     public void menu4_pressed(View view){
 
 
+
         /*byte[] dummy = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};
         BlueHomeDevice test = new BlueHomeDevice("10:80:E1:00:34:12", "test");
         bleman2.writeValue(bleman2.UUID_CMD_CMD_CHAR, dummy, test);*/
     }
 
     public void menu5_pressed(View view){
-
+        bleman.addToBuffer(new BLEBufferElement(devices.get(0), BLEDataExchangeManager.UUID_CMD_SERV, BLEDataExchangeManager.UUID_CMD_SERV, "Test", "Test"), this);
     }
 
     /**

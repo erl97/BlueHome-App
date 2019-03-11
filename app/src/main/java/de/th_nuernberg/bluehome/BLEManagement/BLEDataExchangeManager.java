@@ -9,7 +9,9 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
+import android.content.Context;
 import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -43,6 +45,8 @@ public class BLEDataExchangeManager extends Application {
     public final static String ERROR_FOUND_BC = "Error_Found";
     public final static String READ_RES_NAME = "Read_Res_Name";
 
+    private LocalBroadcastManager broadcaster;
+
     public final static UUID UUID_CMD_SERV =            UUID.fromString("02366E80-CF3A-11E1-9AB4-0002A5D5C51A");
     public final static UUID UUID_CMD_CMD_CHAR =        UUID.fromString("02366E80-CF3A-11E1-9AB4-0002A5D5C51B");
 
@@ -58,13 +62,39 @@ public class BLEDataExchangeManager extends Application {
     public final static UUID UUID_DIRECT_OPTIONS =      UUID.fromString("02366E80-CF3A-11E1-9AB4-0002A5D5C53D");
 
     public BLEDataExchangeManager(){
+        //broadcaster = LocalBroadcastManager.getInstance(context);
         //final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
         //mBluetoothAdapter = bluetoothManager.getAdapter();
     }
 
-    public void addToBuffer(BLEBufferElement toBuffer){
+    public void addToBuffer(BLEBufferElement toBuffer, Context context){
+        Log.i(DEBUG_TAG, "building Intent");
+        //Intent intent = new Intent(context, hBLEService.class);
+        if(toBuffer.getOperation().equals(BLEBufferElement.READ_DEVICE)) {
+            Log.i(DEBUG_TAG, BLEBufferElement.READ_DEVICE);
+            intent.setAction(BLEBufferElement.READ_DEVICE);
+            /*intent.putExtra(BLEBufferElement.TAG_DEV_MAC, toBuffer.getDev().getMacAddress());
+            intent.putExtra(BLEBufferElement.TAG_CHAR_UUID, toBuffer.getCharUuid());
+            intent.putExtra(BLEBufferElement.TAG_SERV_UUID, toBuffer.getServUuid());
+            intent.putExtra(BLEBufferElement.TAG_BROAD_READ, toBuffer.getBroadcastOnRead());
+            intent.putExtra(BLEBufferElement.TAG_BROAD_ERROR, toBuffer.getBroadcastOnConnectionError());*/
+        }
+        if(toBuffer.getOperation().equals(BLEBufferElement.WRITE_DEVICE)){
+            intent.setAction(BLEBufferElement.WRITE_DEVICE);
+            intent.putExtra(BLEBufferElement.TAG_DEV_MAC, toBuffer.getDev().getMacAddress());
+            intent.putExtra(BLEBufferElement.TAG_CHAR_UUID, toBuffer.getCharUuid());
+            intent.putExtra(BLEBufferElement.TAG_SERV_UUID, toBuffer.getServUuid());
+            intent.putExtra(BLEBufferElement.TAG_DATA, toBuffer.getData());
+            intent.putExtra(BLEBufferElement.TAG_BROAD_ERROR, toBuffer.getBroadcastOnConnectionError());
+        }
+        Log.i(DEBUG_TAG, "issueing start");
+        startService(intent);
+        Log.i(DEBUG_TAG, "start issued");
+
+        /*
         buffer.add(toBuffer);
         kickOffAction();
+        */
     }
 
     public void scanError(BlueHomeDevice dev) {
@@ -147,12 +177,13 @@ public class BLEDataExchangeManager extends Application {
 
     private void notifyFailed(){
         Intent in = new Intent(buffer.get(0).getBroadcastOnConnectionError());
-        sendBroadcast(in);
+        broadcaster.sendBroadcast(in);
     }
 
     protected void notifyRead(byte[] res){
         Intent in = new Intent(buffer.get(0).getBroadcastOnRead());
         in.putExtra(READ_RES_NAME, res);
+        broadcaster.sendBroadcast(in);
     }
 
     private final BluetoothGattCallback gattCallback = new BluetoothGattCallback() {
@@ -195,7 +226,7 @@ public class BLEDataExchangeManager extends Application {
                 }
             }
 
-            if(buffer.get(0).getOperation() == BLEBufferElement.WRITE_DEVICE){
+            if(buffer.get(0).getOperation().equals(BLEBufferElement.WRITE_DEVICE)){
                 Log.i(DEBUG_TAG, "starting write...");
                 gatt.getService(buffer.get(0).getServUuid()).getCharacteristic(buffer.get(0).getCharUuid()).setValue(buffer.get(0).getData());
                 gatt.getService(buffer.get(0).getServUuid()).getCharacteristic(buffer.get(0).getCharUuid()).setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);

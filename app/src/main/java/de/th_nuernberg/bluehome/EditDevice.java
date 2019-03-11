@@ -39,13 +39,15 @@ public class EditDevice extends AppCompatActivity {
     Integer[] spinnerImages;
     private BlueHomeDevice toEdit;
     private BlueHomeDeviceStorageManager db = new BlueHomeDeviceStorageManager(this);
-    private BLEDataExchangeManager bleman = (BLEDataExchangeManager) this.getApplication();
+    private BLEDataExchangeManager bleman;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_device);
         setTitle(R.string.edit_device);
+
+        bleman = (BLEDataExchangeManager) this.getApplication();
 
         shownNameView = (EditText)findViewById(R.id.edit_device_shown_name);
         realNameView = (TextView)findViewById(R.id.edit_device_real_name);
@@ -112,8 +114,12 @@ public class EditDevice extends AppCompatActivity {
         Log.i("paramPart", "" + tmpAct.getMaskPart(0));
 
 
-
-        bleman.addToBuffer(new BLEBufferElement(toEdit, tmpBytes, BLEDataExchangeManager.UUID_CMD_SERV, BLEDataExchangeManager.UUID_CMD_CMD_CHAR, "FAIL"));
+        BLEBufferElement tmpBuf = new BLEBufferElement(toEdit, tmpBytes, BLEDataExchangeManager.UUID_CMD_SERV, BLEDataExchangeManager.UUID_CMD_CMD_CHAR, "FAIL");
+        Log.i("ActionButton", "created Buffer Element");
+        if(bleman != null)
+            bleman.addToBuffer(tmpBuf, this);
+        else
+            Log.i("ActionButton", "NullPointer");
 
     }
 
