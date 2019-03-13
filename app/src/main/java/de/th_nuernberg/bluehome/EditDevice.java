@@ -18,6 +18,7 @@ import java.util.Arrays;
 
 import de.th_nuernberg.bluehome.BLEManagement.BLEBufferElement;
 import de.th_nuernberg.bluehome.BLEManagement.BLEDataExchangeManager;
+import de.th_nuernberg.bluehome.BLEManagement.BLEService;
 import de.th_nuernberg.bluehome.BlueHomeDatabase.BlueHomeDeviceStorageManager;
 import de.th_nuernberg.bluehome.RuleProcessObjects.ActionObject;
 import de.th_nuernberg.bluehome.RuleProcessObjects.RPC;
@@ -114,7 +115,7 @@ public class EditDevice extends AppCompatActivity {
         Log.i("paramPart", "" + tmpAct.getMaskPart(0));
 
 
-        BLEBufferElement tmpBuf = new BLEBufferElement(toEdit, tmpBytes, BLEDataExchangeManager.UUID_CMD_SERV, BLEDataExchangeManager.UUID_CMD_CMD_CHAR, "FAIL");
+        BLEBufferElement tmpBuf = new BLEBufferElement(toEdit, tmpBytes, BLEService.UUID_CMD_SERV, BLEService.UUID_CMD_CMD_CHAR, "FAIL");
         Log.i("ActionButton", "created Buffer Element");
         if(bleman != null)
             bleman.addToBuffer(tmpBuf, this);

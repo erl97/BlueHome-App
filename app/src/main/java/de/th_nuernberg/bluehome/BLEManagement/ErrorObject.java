@@ -13,6 +13,8 @@ public class ErrorObject {
 
     public static final int ERROR_NO_ERROR = 0;
     public static final int ERROR_NOT_AVAILABLE = 1;
+    public static final int ERROR_CHAR_WRITE = 2;
+    public static final int ERROR_CHAR_READ = 3;
 
     public ErrorObject(int errorID, BlueHomeDevice device) {
         this.device = device;

@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 
 import de.th_nuernberg.bluehome.BLEManagement.BLEBufferElement;
 import de.th_nuernberg.bluehome.BLEManagement.BLEDataExchangeManager;
+import de.th_nuernberg.bluehome.BLEManagement.BLEService;
 import de.th_nuernberg.bluehome.BLEManagement.ErrorObject;
 import de.th_nuernberg.bluehome.BlueHomeDatabase.BlueHomeDeviceStorageManager;
 
@@ -49,17 +51,17 @@ public class StartActivity extends AppCompatActivity {
 
     public static String REFRESH_ACTIVITY = "de.th_nuernberg.bluehome.action.REFRESH_ERROR";
 
-    private class ErrorReceiver extends BroadcastReceiver {
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            //errors = bleman.getErrors();
+            ErrorObject err = new ErrorObject(intent.getIntExtra(BLEService.TAG_SOURCE, 0), storageManager.getDevice(intent.getStringExtra(BLEService.TAG_MAC)));
+            errors.add(err);
             errorListAdapter.setNewErrorlist(errors);
             errorListAdapter.notifyDataSetChanged();
             list.deferNotifyDataSetChanged();
         }
-    }
-
-    private BroadcastReceiver errorRec = new ErrorReceiver();
+    };
 
 
     @Override
@@ -79,6 +81,8 @@ public class StartActivity extends AppCompatActivity {
 
         getPermissions();
 
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                new IntentFilter("ERROR_ACTION"));
 
     }
 
@@ -88,7 +92,6 @@ public class StartActivity extends AppCompatActivity {
             //showPopup();
 
         IntentFilter filter = new IntentFilter("ERROR_ACTION");
-        this.registerReceiver(errorRec, filter);
 
         devices = storageManager.getAllDevices();
         //bleman.readErrors();
@@ -98,13 +101,13 @@ public class StartActivity extends AppCompatActivity {
     }
 
     protected void onStop() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
         super.onStop();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        this.unregisterReceiver(this.errorRec);
     }
 
     private void showPopup() {
@@ -142,15 +145,10 @@ public class StartActivity extends AppCompatActivity {
 
     public void menu4_pressed(View view){
 
-
-
-        /*byte[] dummy = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};
-        BlueHomeDevice test = new BlueHomeDevice("10:80:E1:00:34:12", "test");
-        bleman2.writeValue(bleman2.UUID_CMD_CMD_CHAR, dummy, test);*/
     }
 
     public void menu5_pressed(View view){
-        bleman.addToBuffer(new BLEBufferElement(devices.get(0), BLEDataExchangeManager.UUID_CMD_SERV, BLEDataExchangeManager.UUID_CMD_SERV, "Test", "Test"), this);
+        bleman.addToBuffer(new BLEBufferElement(devices.get(0), BLEService.UUID_CMD_SERV, BLEService.UUID_CMD_SERV, "Test", "ERROR_ACTION"), this);
     }
 
     /**
