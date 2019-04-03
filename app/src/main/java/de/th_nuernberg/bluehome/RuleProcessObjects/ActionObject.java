@@ -10,7 +10,6 @@ public class ActionObject {
     private byte actionSAM;
     private byte actionID;
     private int paramMask;
-    private byte paramNum;
     private byte[] param = new byte[20];
 
     public ActionObject(){
@@ -47,14 +46,6 @@ public class ActionObject {
 
     public void setParamMask(int paramMask) {
         this.paramMask = paramMask;
-    }
-
-    public byte getParamNum() {
-        return paramNum;
-    }
-
-    public void setParamNum(byte paramNum) {
-        this.paramNum = paramNum;
     }
 
     public byte[] getParam() {

@@ -62,6 +62,9 @@ public class BLEService extends Service {
     public final static UUID UUID_DIRECT_PARAMCOMP =    UUID.fromString("02366E80-CF3A-11E1-9AB4-0002A5D5C53C");
     public final static UUID UUID_DIRECT_OPTIONS =      UUID.fromString("02366E80-CF3A-11E1-9AB4-0002A5D5C53D");
 
+
+
+
     private final static String DEBUG_TAG = "BLEService";
 
     public BLEService() {
@@ -90,8 +93,10 @@ public class BLEService extends Service {
         if(toBuffer == null) {
             Log.e(DEBUG_TAG, "toBuffer Null Pointer");
             stopSelf();
-        } else
+        } else {
             buffer.add(toBuffer);
+            Log.i(DEBUG_TAG, "added " + toBuffer.getDev().getMacAddress() + " to Buffer");
+        }
         kickOffAction();
         return Service.START_STICKY;
     }
@@ -153,11 +158,10 @@ public class BLEService extends Service {
         errorBuffer.add(tmp);
         notifyErrorChanged();
         disconnected();
-        runNext();
     }
 
     protected void disconnected(){
-        buffer.remove(actDev);
+        buffer.remove(0);
         actDev = null;
         Log.i(DEBUG_TAG, "Disconnection Completed");
         runNext();
@@ -177,6 +181,7 @@ public class BLEService extends Service {
         Intent in = new Intent(buffer.get(0).getBroadcastOnConnectionError());
         in.putExtra(TAG_SOURCE, source);
         in.putExtra(TAG_MAC, gatt.getDevice().getAddress());
+        Log.i(DEBUG_TAG, "Sending Broadcast " + buffer.get(0).getBroadcastOnConnectionError());
         broadcaster.sendBroadcast(in);
     }
 
@@ -198,7 +203,7 @@ public class BLEService extends Service {
                     Log.i(DEBUG_TAG, "Start scan");
                     break;
                 case BluetoothProfile.STATE_DISCONNECTED:  //Connection Lost
-                    Log.i(DEBUG_TAG, "Connection failed!");
+                    Log.i(DEBUG_TAG, "Connection failed/ended!");
                     if(status == 0 || status == 19) //normal disconnect
                         disconnected();
                     else
@@ -215,6 +220,9 @@ public class BLEService extends Service {
             List<BluetoothGattService> services = gatt.getServices();
             Log.i(DEBUG_TAG, "Services Discovered " + services.toString());
 
+            for(int i = 0; i < services.size(); i++)
+                Log.i(DEBUG_TAG, "Service found: "+services.get(i).getUuid());
+
             if(buffer.get(0).getOperation() == BLEBufferElement.READ_DEVICE){
                 for (int i = 0; i < services.size(); i++) {
                     for (int j = 0; j < services.get(i).getCharacteristics().size(); j++) {
@@ -228,10 +236,44 @@ public class BLEService extends Service {
 
             if(buffer.get(0).getOperation().equals(BLEBufferElement.WRITE_DEVICE)){
                 Log.i(DEBUG_TAG, "starting write...");
-                gatt.getService(buffer.get(0).getServUuid()).getCharacteristic(buffer.get(0).getCharUuid()).setValue(buffer.get(0).getData());
+                if(gatt == null){
+                    Log.e(DEBUG_TAG, "Gatt is null!");
+                }
+                if(buffer.isEmpty()){
+                    Log.e(DEBUG_TAG, "buffer empty!");
+                }
+                Log.i(DEBUG_TAG,""+buffer.get(0).getServUuid());
+                Log.i(DEBUG_TAG,""+gatt.getDevice().getAddress());
+               /* gatt.getService(buffer.get(0).getServUuid()).getCharacteristic(buffer.get(0).getCharUuid()).setValue(buffer.get(0).getData());
                 gatt.getService(buffer.get(0).getServUuid()).getCharacteristic(buffer.get(0).getCharUuid()).setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
-                boolean state = gatt.writeCharacteristic(gatt.getService(buffer.get(0).getServUuid()).getCharacteristic(buffer.get(0).getCharUuid()));
+                boolean state = gatt.writeCharacteristic(gatt.getService(buffer.get(0).getServUuid()).getCharacteristic(buffer.get(0).getCharUuid()));*/
+                boolean state = false;
+                for (int i = 0; i < services.size(); i++) {
+                    for (int j = 0; j < services.get(i).getCharacteristics().size(); j++) {
+                        if (services.get(i).getCharacteristics().get(j).getUuid().equals(buffer.get(0).getCharUuid())) {
+                            gatt.getService(services.get(i).getUuid()).getCharacteristic(services.get(i).getCharacteristics().get(j).getUuid()).setValue(buffer.get(0).getData());
+                            gatt.getService(services.get(i).getUuid()).getCharacteristic(services.get(i).getCharacteristics().get(j).getUuid()).setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
+                            state = gatt.writeCharacteristic(gatt.getService(services.get(i).getUuid()).getCharacteristic(services.get(i).getCharacteristics().get(j).getUuid()));
+
+                            Log.i(DEBUG_TAG, "Writing UUID " + services.get(i).getCharacteristics().get(j).getUuid());
+                        }
+                    }
+                }
+
                 Log.i(DEBUG_TAG, "write state " + state);
+
+                if(!state){
+                    if(buffer.size() > 1){
+                        if(buffer.get(1).getDev().equals(actDev)){
+                            buffer.remove(0);
+                            gatt.discoverServices();
+                        }
+                    } else
+                        gatt.disconnect();
+                }
+
+
+
             }
         }
 

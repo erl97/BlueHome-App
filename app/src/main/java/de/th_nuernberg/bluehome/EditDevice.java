@@ -1,6 +1,10 @@
 package de.th_nuernberg.bluehome;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,12 +17,14 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Arrays;
 
 import de.th_nuernberg.bluehome.BLEManagement.BLEBufferElement;
 import de.th_nuernberg.bluehome.BLEManagement.BLEDataExchangeManager;
 import de.th_nuernberg.bluehome.BLEManagement.BLEService;
+import de.th_nuernberg.bluehome.BLEManagement.ErrorObject;
 import de.th_nuernberg.bluehome.BlueHomeDatabase.BlueHomeDeviceStorageManager;
 import de.th_nuernberg.bluehome.RuleProcessObjects.ActionObject;
 import de.th_nuernberg.bluehome.RuleProcessObjects.RPC;
@@ -40,15 +46,21 @@ public class EditDevice extends AppCompatActivity {
     Integer[] spinnerImages;
     private BlueHomeDevice toEdit;
     private BlueHomeDeviceStorageManager db = new BlueHomeDeviceStorageManager(this);
-    private BLEDataExchangeManager bleman;
+    private BLEDataExchangeManager bleman = new BLEDataExchangeManager();
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.i("EditDevice", "Received Broadcast");
+            Toast.makeText(context,"Failed to Connect to " + intent.getStringExtra(BLEService.TAG_MAC), Toast.LENGTH_SHORT).show();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_device);
         setTitle(R.string.edit_device);
-
-        bleman = (BLEDataExchangeManager) this.getApplication();
 
         shownNameView = (EditText)findViewById(R.id.edit_device_shown_name);
         realNameView = (TextView)findViewById(R.id.edit_device_real_name);
@@ -82,6 +94,14 @@ public class EditDevice extends AppCompatActivity {
             }
         });
 
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                new IntentFilter("FAIL"));
+
+    }
+
+    protected void onStop() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+        super.onStop();
     }
 
     public void writeRule(View view){
@@ -96,26 +116,26 @@ public class EditDevice extends AppCompatActivity {
         rule.getToComp().setParams(tmpBytes);
         rule.getToComp().setSourceID((byte)2);
         rule.getToComp().setSourceSAM(RPC.SAM_BUTTON);
-        rule.getToComp().setParamNum((byte)6);
 
+
+        bleman.programMAC(toEdit, (byte)1, "AB:CD:EF:12:34:56", this);
         //Log.i("StartAct", ""+bleman.writeRule(toEdit, rule));
     }
 
     public void writeAction(View view) {
         ActionObject tmpAct = new ActionObject();
-        byte[] tmpBytes = {1,2,3,4,5,6};
+        byte[] tmpBytes = {0x07,0x01};
         tmpAct.setActionID((byte)1);
         tmpAct.setActionMemID((byte)5);
         tmpAct.setActionSAM((byte)3);
         tmpAct.setParam(tmpBytes);
         tmpAct.setParamMask(0b00000000000000000000101010101010);
-        tmpAct.setParamNum((byte)6);
 
         //bleman.writeAction(toEdit, tmpAct);
         Log.i("paramPart", "" + tmpAct.getMaskPart(0));
 
 
-        BLEBufferElement tmpBuf = new BLEBufferElement(toEdit, tmpBytes, BLEService.UUID_CMD_SERV, BLEService.UUID_CMD_CMD_CHAR, "FAIL");
+        BLEBufferElement tmpBuf = new BLEBufferElement(toEdit, tmpBytes, BLEService.UUID_DIRECT_OPTIONS, BLEService.UUID_DIRECT_SERV, "FAIL");
         Log.i("ActionButton", "created Buffer Element");
         if(bleman != null)
             bleman.addToBuffer(tmpBuf, this);

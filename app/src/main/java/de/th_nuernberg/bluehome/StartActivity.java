@@ -91,8 +91,6 @@ public class StartActivity extends AppCompatActivity {
         //if(firstStart)
             //showPopup();
 
-        IntentFilter filter = new IntentFilter("ERROR_ACTION");
-
         devices = storageManager.getAllDevices();
         //bleman.readErrors();
         //errors = bleman.getErrors();

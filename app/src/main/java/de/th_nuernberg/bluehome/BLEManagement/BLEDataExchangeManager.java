@@ -13,6 +13,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import de.th_nuernberg.bluehome.BlueHomeDevice;
+import de.th_nuernberg.bluehome.RuleProcessObjects.ActionObject;
+import de.th_nuernberg.bluehome.RuleProcessObjects.RPC;
+import de.th_nuernberg.bluehome.RuleProcessObjects.RuleObject;
+
+import static de.th_nuernberg.bluehome.BLEManagement.BLEService.UUID_DIRECT_PARAM;
 
 
 public class BLEDataExchangeManager extends Application {
@@ -46,10 +52,38 @@ public class BLEDataExchangeManager extends Application {
         Log.i(DEBUG_TAG, "issueing start");
         context.startService(intent);
         Log.i(DEBUG_TAG, "start issued");
+    }
 
-        /*
-        buffer.add(toBuffer);
-        kickOffAction();
-        */
+    public void programAction(BlueHomeDevice dev, ActionObject act, Context con){
+        addToBuffer(new BLEBufferElement(dev, act.getParam(), BLEService.UUID_DIRECT_PARAM, BLEService.UUID_DIRECT_SERV, "WRITE_FAIL"), con);
+        byte[] tmpData = new byte[]{RPC.SAM_PROG, RPC.ACT_ID_WRITE_ACTION, act.getActionMemID(), act.getActionSAM(), act.getActionID(), act.getMaskPart(0), act.getMaskPart(1), act.getMaskPart(2), act.getMaskPart(3)};
+        addToBuffer(new BLEBufferElement(dev, tmpData, BLEService.UUID_DIRECT_OPTIONS, BLEService.UUID_DIRECT_SERV, "WRITE_FAIL"), con);
+    }
+
+    public void runAction(BlueHomeDevice dev, ActionObject act, Context con){
+        addToBuffer(new BLEBufferElement(dev, act.getParam(), BLEService.UUID_DIRECT_PARAM, BLEService.UUID_DIRECT_SERV, "WRITE_FAIL"), con);
+        byte[] tmpData = new byte[]{act.getActionSAM(), act.getActionID(), act.getMaskPart(0), act.getMaskPart(1), act.getMaskPart(2), act.getMaskPart(3)};
+        addToBuffer(new BLEBufferElement(dev, tmpData, BLEService.UUID_DIRECT_OPTIONS, BLEService.UUID_DIRECT_SERV, "WRITE_FAIL"), con);
+    }
+
+    public void programRule(BlueHomeDevice dev, RuleObject rule, Context con){
+        addToBuffer(new BLEBufferElement(dev, rule.getToComp().getParams(), BLEService.UUID_DIRECT_PARAM, BLEService.UUID_DIRECT_SERV, "WRITE_FAIL"), con);
+        addToBuffer(new BLEBufferElement(dev, rule.getParamComp(), BLEService.UUID_DIRECT_PARAMCOMP, BLEService.UUID_DIRECT_SERV, "WRITE_FAIL"), con);
+        byte[] tmpData = new byte[]{RPC.SAM_PROG, RPC.ACT_ID_WRITE_RULE, rule.getActionMemID(), rule.getRuleMemID(), rule.getToComp().getSourceSAM(), rule.getToComp().getSourceID()};
+        addToBuffer(new BLEBufferElement(dev, tmpData, BLEService.UUID_DIRECT_OPTIONS, BLEService.UUID_DIRECT_SERV, "WRITE_FAIL"), con);
+    }
+
+    public void programMAC(BlueHomeDevice dev, byte macID, String mac, Context con){
+        String[] macParts = mac.split(":");
+
+        byte[] macBytes = new byte[6];
+        for(int i=0; i<6; i++){
+            Integer hex = Integer.parseInt(macParts[i], 16);
+            macBytes[i] = hex.byteValue();
+        }
+        byte[] param = new byte[]{macID, macBytes[0], macBytes[1], macBytes[2], macBytes[3], macBytes[4], macBytes[5]};
+        addToBuffer(new BLEBufferElement(dev, param, BLEService.UUID_DIRECT_PARAM, BLEService.UUID_DIRECT_SERV, "WRITE_FAIL"), con);
+        byte[] tmpData = new byte[]{RPC.SAM_PROG, RPC.ACT_ID_WRITE_MAC};
+        addToBuffer(new BLEBufferElement(dev, tmpData, BLEService.UUID_DIRECT_OPTIONS, BLEService.UUID_DIRECT_SERV, "WRITE_FAIL"), con);
     }
 }
