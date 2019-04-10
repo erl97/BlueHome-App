@@ -18,5 +18,5 @@ public class DBConstants {
     public static final String RULES_TABLE_NAME = "rules";
     public static final String RULES_COLUMN_RULE_MEM_ID = "rule_mem_id";
     public static final String RULES_COLUMN_ACTION_MEM_ID = "action_mem_id";
-
+    public static final String RULES_COLUMN_PARAM_COMP_BASE = "param_comp_";
 }
