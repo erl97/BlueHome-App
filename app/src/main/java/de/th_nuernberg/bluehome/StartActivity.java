@@ -49,17 +49,17 @@ public class StartActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_WRITE_STORAGE = 2;
     private static final int PERMISSION_REQUEST_BLUETOOTH = 3;
 
-    public static String REFRESH_ACTIVITY = "de.th_nuernberg.bluehome.action.REFRESH_ERROR";
-
-
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            ErrorObject err = new ErrorObject(intent.getIntExtra(BLEService.TAG_SOURCE, 0), storageManager.getDevice(intent.getStringExtra(BLEService.TAG_MAC)));
-            errors.add(err);
-            errorListAdapter.setNewErrorlist(errors);
-            errorListAdapter.notifyDataSetChanged();
-            list.deferNotifyDataSetChanged();
+            //if(intent.getIntExtra(BLEService.TAG_SOURCE, 0) == ErrorObject.ERROR_NOT_AVAILABLE)
+            {
+                ErrorObject err = new ErrorObject(intent.getIntExtra(BLEService.TAG_SOURCE, 0), storageManager.getDevice(intent.getStringExtra(BLEService.TAG_MAC)));
+                errors.add(err);
+                errorListAdapter.setNewErrorlist(errors);
+                errorListAdapter.notifyDataSetChanged();
+                list.deferNotifyDataSetChanged();
+            }
         }
     };
 
@@ -82,7 +82,7 @@ public class StartActivity extends AppCompatActivity {
         getPermissions();
 
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
-                new IntentFilter("ERROR_ACTION"));
+                new IntentFilter("NOT_REACHABLE"));
 
     }
 
@@ -146,7 +146,7 @@ public class StartActivity extends AppCompatActivity {
     }
 
     public void menu5_pressed(View view){
-        bleman.addToBuffer(new BLEBufferElement(devices.get(0), BLEService.UUID_CMD_SERV, BLEService.UUID_CMD_SERV, "Test", "ERROR_ACTION"), this);
+
     }
 
     /**

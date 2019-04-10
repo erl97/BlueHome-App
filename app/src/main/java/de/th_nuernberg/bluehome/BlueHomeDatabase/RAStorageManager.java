@@ -1,5 +1,9 @@
 package de.th_nuernberg.bluehome.BlueHomeDatabase;
 
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+
 import java.util.ArrayList;
 
 import de.th_nuernberg.bluehome.BlueHomeDevice;
@@ -8,10 +12,10 @@ import de.th_nuernberg.bluehome.RuleProcessObjects.RuleObject;
 /**
  * RAStorageManager (RuleActionStorageManager
  */
-public class RAStorageManager {
+public class RAStorageManager extends SQLiteOpenHelper {
 
-    public void RAStorageManager(){
-
+    public RAStorageManager(Context context){
+        super(context, DBConstants.DATABASE_NAME , null, 1);
     }
 
     //rule section
@@ -34,4 +38,13 @@ public class RAStorageManager {
     }
 
 
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+    }
 }

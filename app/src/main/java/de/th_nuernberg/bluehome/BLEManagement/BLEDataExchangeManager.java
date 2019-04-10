@@ -1,14 +1,7 @@
 package de.th_nuernberg.bluehome.BLEManagement;
 
 import android.app.Application;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothGatt;
-import android.bluetooth.BluetoothGattCallback;
-import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattService;
-import android.bluetooth.BluetoothManager;
-import android.bluetooth.BluetoothProfile;
+
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -17,8 +10,6 @@ import de.th_nuernberg.bluehome.BlueHomeDevice;
 import de.th_nuernberg.bluehome.RuleProcessObjects.ActionObject;
 import de.th_nuernberg.bluehome.RuleProcessObjects.RPC;
 import de.th_nuernberg.bluehome.RuleProcessObjects.RuleObject;
-
-import static de.th_nuernberg.bluehome.BLEManagement.BLEService.UUID_DIRECT_PARAM;
 
 
 public class BLEDataExchangeManager extends Application {

@@ -68,7 +68,7 @@ public class EditDevice extends AppCompatActivity {
         imgSpinnerView = (Spinner)findViewById(R.id.edit_device_img_spinner);
         submitButton = (Button)findViewById(R.id.edit_device_submit_button);
 
-        spinnerImages = new Integer[]{R.drawable.add, R.drawable.bluehome_device, R.drawable.delete, R.drawable.dashboard_menu_button_1, R.drawable.dashboard_menu_button_2, R.drawable.unknown_device};
+        spinnerImages = new Integer[]{R.drawable.bluehome_node, R.drawable.bluehome_node_1, R.drawable.bluehome_node_2, R.drawable.bluehome_node_3, R.drawable.bluehome_node_4};
 
         toEdit = db.getDevice(getIntent().getExtras().getString("macAddress"));
         if(toEdit == null)
@@ -124,7 +124,7 @@ public class EditDevice extends AppCompatActivity {
 
     public void writeAction(View view) {
         ActionObject tmpAct = new ActionObject();
-        byte[] tmpBytes = {0x07,0x01};
+        byte[] tmpBytes = {0x00,0x00};
         tmpAct.setActionID((byte)1);
         tmpAct.setActionMemID((byte)5);
         tmpAct.setActionSAM((byte)3);
@@ -134,11 +134,15 @@ public class EditDevice extends AppCompatActivity {
         //bleman.writeAction(toEdit, tmpAct);
         Log.i("paramPart", "" + tmpAct.getMaskPart(0));
 
+        BLEBufferElement tmpBuf = new BLEBufferElement(toEdit, tmpBytes, BLEService.UUID_DIRECT_PARAM, BLEService.UUID_DIRECT_SERV, "FAIL");
 
-        BLEBufferElement tmpBuf = new BLEBufferElement(toEdit, tmpBytes, BLEService.UUID_DIRECT_OPTIONS, BLEService.UUID_DIRECT_SERV, "FAIL");
+        byte[] tmpBytes2 = {0x07,0x01};
+        BLEBufferElement tmpBuf2 = new BLEBufferElement(toEdit, tmpBytes2, BLEService.UUID_DIRECT_OPTIONS, BLEService.UUID_DIRECT_SERV, "FAIL");
         Log.i("ActionButton", "created Buffer Element");
-        if(bleman != null)
+        if(bleman != null) {
             bleman.addToBuffer(tmpBuf, this);
+            bleman.addToBuffer(tmpBuf2, this);
+        }
         else
             Log.i("ActionButton", "NullPointer");
 
