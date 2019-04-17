@@ -10,6 +10,7 @@ public class ActionObject {
     private byte actionSAM;
     private byte actionID;
     private int paramMask;
+    private byte appActionID;
     private byte[] param = new byte[20];
 
     public ActionObject(){

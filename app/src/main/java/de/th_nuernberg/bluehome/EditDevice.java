@@ -124,7 +124,7 @@ public class EditDevice extends AppCompatActivity {
 
     public void writeAction(View view) {
         ActionObject tmpAct = new ActionObject();
-        byte[] tmpBytes = {0x00,0x00};
+        byte[] tmpBytes = {0x01};
         tmpAct.setActionID((byte)1);
         tmpAct.setActionMemID((byte)5);
         tmpAct.setActionSAM((byte)3);
@@ -136,7 +136,7 @@ public class EditDevice extends AppCompatActivity {
 
         BLEBufferElement tmpBuf = new BLEBufferElement(toEdit, tmpBytes, BLEService.UUID_DIRECT_PARAM, BLEService.UUID_DIRECT_SERV, "FAIL");
 
-        byte[] tmpBytes2 = {0x07,0x01};
+        byte[] tmpBytes2 = {0x0A,0x01};
         BLEBufferElement tmpBuf2 = new BLEBufferElement(toEdit, tmpBytes2, BLEService.UUID_DIRECT_OPTIONS, BLEService.UUID_DIRECT_SERV, "FAIL");
         Log.i("ActionButton", "created Buffer Element");
         if(bleman != null) {

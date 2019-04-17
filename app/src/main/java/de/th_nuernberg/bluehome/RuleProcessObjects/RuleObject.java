@@ -12,6 +12,16 @@ public class RuleObject {
     private byte ruleMemID;
     private byte actionMemID;
     private SourceObject toComp;
+
+    public byte getAppRuleID() {
+        return appRuleID;
+    }
+
+    public void setAppRuleID(byte appRuleID) {
+        this.appRuleID = appRuleID;
+    }
+
+    private byte appRuleID;
     private byte[] paramComp = new byte[20];
 
 
