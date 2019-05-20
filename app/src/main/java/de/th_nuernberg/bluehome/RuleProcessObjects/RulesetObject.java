@@ -10,6 +10,7 @@ public class RulesetObject {
     private RuleObject rule2;
     private BlueHomeDevice dev1;
     private BlueHomeDevice dev2;
+    private String name;
 
     public byte getRulesetID() {
         return rulesetID;
@@ -65,5 +66,13 @@ public class RulesetObject {
 
     public void setDev2(BlueHomeDevice dev2) {
         this.dev2 = dev2;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

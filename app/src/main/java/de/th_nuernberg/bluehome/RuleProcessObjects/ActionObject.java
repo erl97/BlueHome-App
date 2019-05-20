@@ -17,6 +17,8 @@ public class ActionObject {
 
     }
 
+
+
     public byte getActionMemID() {
         return actionMemID;
     }
@@ -60,5 +62,13 @@ public class ActionObject {
     public byte getMaskPart(int part){
         int msk = 0b11111111;
         return ((byte)((paramMask & (msk << (part * 8))) >> (part * 8)));
+    }
+
+    public byte getAppActionID() {
+        return appActionID;
+    }
+
+    public void setAppActionID(byte appActionID) {
+        this.appActionID = appActionID;
     }
 }

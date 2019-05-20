@@ -1,4 +1,4 @@
-package de.th_nuernberg.bluehome;
+package de.th_nuernberg.bluehome.Adapters;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import de.th_nuernberg.bluehome.BLEManagement.ErrorObject;
+import de.th_nuernberg.bluehome.R;
+import de.th_nuernberg.bluehome.StartActivity;
 
 /**
  * ErrorListAdapter is used for ListView on {@link StartActivity} to show error states

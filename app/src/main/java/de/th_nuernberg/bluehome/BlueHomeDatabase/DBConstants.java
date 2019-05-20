@@ -32,6 +32,7 @@ public class DBConstants {
     public static final String RULESET_COLUMN_APP_RULE_2_ID     = "app_rule_2_id";
     public static final String RULESET_COLUMN_DEV_1_MAC         = "dev_1_mac";
     public static final String RULESET_COLUMN_DEV_2_MAC         = "dev_2_mac";
+    public static final String RULESET_COLUMN_NAME              = "name";
 
     public static final String ACTIONS_TABLE_NAME               = "actions";
     public static final String ACTIONS_COLUMN_APP_ACTION_ID     = "app_action_id";
@@ -42,3 +43,4 @@ public class DBConstants {
     public static final String ACTIONS_COLUMN_PARAMS            = "params";
 
 }
+

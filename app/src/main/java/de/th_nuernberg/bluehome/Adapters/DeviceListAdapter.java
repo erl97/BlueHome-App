@@ -1,4 +1,4 @@
-package de.th_nuernberg.bluehome;
+package de.th_nuernberg.bluehome.Adapters;
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,6 +11,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+
+import de.th_nuernberg.bluehome.BlueHomeDevice;
+import de.th_nuernberg.bluehome.R;
 
 /**
  * DeviceListAdapter ist used to convert an ArrayList of {@link BlueHomeDevice}s to a showable list with images and formated text.

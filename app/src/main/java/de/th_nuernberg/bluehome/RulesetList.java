@@ -1,9 +1,9 @@
 package de.th_nuernberg.bluehome;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
@@ -14,20 +14,23 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import de.th_nuernberg.bluehome.Adapters.DeviceListAdapter;
+import de.th_nuernberg.bluehome.Adapters.RuleSetListAdapter;
 import de.th_nuernberg.bluehome.BlueHomeDatabase.BlueHomeDeviceStorageManager;
+import de.th_nuernberg.bluehome.BlueHomeDatabase.RuleSetStorageManager;
+import de.th_nuernberg.bluehome.RuleProcessObjects.RulesetObject;
 
 /**
- * DeviceList Activity lists all known {@link BlueHomeDevice}s and offers the ability to edit and delete the devices.
+ * DeviceList Activity lists all known {@link de.th_nuernberg.bluehome.RuleProcessObjects.RulesetObject}s and offers the ability to edit and delete the Rulesets.
  *
  * @author Philipp Herrmann
  */
-public class DeviceList extends AppCompatActivity {
+public class RulesetList extends AppCompatActivity {
 
     private ListView list;
-    private ArrayList<BlueHomeDevice> devices;
+    private ArrayList<RulesetObject> rulesets;
     private FloatingActionButton deleteButton, addButton;
-    private BlueHomeDeviceStorageManager storageManager = new BlueHomeDeviceStorageManager(this);
-    private DeviceListAdapter list_adapter;
+    private RuleSetStorageManager storageManager = new RuleSetStorageManager(this);
+    private RuleSetListAdapter list_adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,27 +39,27 @@ public class DeviceList extends AppCompatActivity {
         setContentView(R.layout.activity_device_list);
 
         //get Views
-        deleteButton = (FloatingActionButton) findViewById(R.id.device_list_delete);
-        addButton = (FloatingActionButton) findViewById(R.id.device_list_add);
-        list = findViewById(R.id.device_list);
+        deleteButton = (FloatingActionButton) findViewById(R.id.ruleset_list_delete);
+        addButton = (FloatingActionButton) findViewById(R.id.ruleset_list_add);
+        list = findViewById(R.id.ruleset_list);
 
         DecimalFormat df = new DecimalFormat("00");
         BlueHomeDevice tmp;
 
-        devices = storageManager.getAllDevices();
+        rulesets = storageManager.getAllRulessets();
 
-        list_adapter = new DeviceListAdapter(this, devices);
+        list_adapter = new RuleSetListAdapter(this, rulesets);
               list.setAdapter(list_adapter);
 
 
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+       /* list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent i = new Intent(DeviceList.this, EditDevice.class);
-                i.putExtra("macAddress", devices.get(position).getMacAddress());
+                Intent i = new Intent(RulesetList.this, EditRuleset.class);
+                i.putExtra("rulesetID", rulesets.get(position).getRulesetID());
                 startActivity(i);
             }
-        });
+        });*/
 
 
 
@@ -65,20 +68,20 @@ public class DeviceList extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (devices.size() <= 0) {
+                if (rulesets.size() <= 0) {
                     Toast.makeText(getBaseContext(), getResources().getText(R.string.no_entries), Toast.LENGTH_LONG).show();
                 }
 
-                if ((devices.size() > 0) && (!list_adapter.isDeleteActive())) {
+                if ((rulesets.size() > 0) && (!list_adapter.isDeleteActive())) {
                     list_adapter.setDeleteActive(true);
-                } else if ((devices.size() > 0) && (list_adapter.isDeleteActive())) {
+                } else if ((rulesets.size() > 0) && (list_adapter.isDeleteActive())) {
 
                     //TODO: ask for sure
                     CheckBox cb;
                     for (int x = 0; x < list.getChildCount() ;x++){
                         cb = (CheckBox)list.getChildAt(x).findViewById(R.id.device_list_delete);
                         if(cb.isChecked()){
-                            storageManager.deleteDevice(devices.get(x).getMacAddress());
+                            storageManager.deleteRuleSet(rulesets.get(x).getRulesetID());
                         }
                     }
 
@@ -91,29 +94,29 @@ public class DeviceList extends AppCompatActivity {
                 else
                     deleteButton.setImageDrawable(getDrawable(R.drawable.delete));
 
-                devices = storageManager.getAllDevices();
-                list_adapter.setNewDevicelist(devices);
+                rulesets = storageManager.getAllRulessets();
+                list_adapter.setNewList(rulesets);
                 list_adapter.notifyDataSetChanged();
                 list.deferNotifyDataSetChanged();
 
             }
         });
 
-        addButton.setOnClickListener(new View.OnClickListener() {
+        /*addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(DeviceList.this, FindNewDevice.class);
+                Intent i = new Intent(RulesetList.this, CreateRuleset.class);
                 startActivity(i);
             }
-        });
+        });*/
     }
 
     @Override
     protected void onResume()
     {
         super.onResume();
-        devices = storageManager.getAllDevices();
-        list_adapter.setNewDevicelist(devices);
+        rulesets = storageManager.getAllRulessets();
+        list_adapter.setNewList(rulesets);
         list_adapter.notifyDataSetChanged();
         list.deferNotifyDataSetChanged();
     }

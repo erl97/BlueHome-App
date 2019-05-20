@@ -12,6 +12,8 @@ public class RuleObject {
     private byte ruleMemID;
     private byte actionMemID;
     private SourceObject toComp;
+    private byte appRuleID;
+    private byte[] paramComp = new byte[20];
 
     public byte getAppRuleID() {
         return appRuleID;
@@ -20,10 +22,6 @@ public class RuleObject {
     public void setAppRuleID(byte appRuleID) {
         this.appRuleID = appRuleID;
     }
-
-    private byte appRuleID;
-    private byte[] paramComp = new byte[20];
-
 
     /**
      * gets Rule ID. This ID identifies the position of the Rule in devices memory
