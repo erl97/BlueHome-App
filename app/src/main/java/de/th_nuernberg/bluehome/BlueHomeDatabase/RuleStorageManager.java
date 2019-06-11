@@ -14,40 +14,12 @@ import de.th_nuernberg.bluehome.RuleProcessObjects.RuleObject;
 import de.th_nuernberg.bluehome.RuleProcessObjects.SourceObject;
 import de.th_nuernberg.bluehome.SplashScreen;
 
-public class RuleStorageManager extends SQLiteOpenHelper {
+public class RuleStorageManager extends DatabaseInitiator {
 
     public RuleStorageManager(Context context) {
-        super(context, DBConstants.DATABASE_NAME , null, 1);
+        super(context);
     }
 
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        db.execSQL(
-                "create table " +
-                        DBConstants.RULES_TABLE_NAME +
-                        " (" +
-                        DBConstants.RULES_COLUMN_APP_RULE_ID +
-                        " integer primary key," +
-                        DBConstants.RULES_COLUMN_ACTION_MEM_ID +
-                        " integer," +
-                        DBConstants.RULES_COLUMN_RULE_MEM_ID +
-                        " integer," +
-                        DBConstants.RULES_COLUMN_PARAM_COMP +
-                        " text," +
-                        DBConstants.RULES_COLUMN_SOURCE_ID +
-                        " integer," +
-                        DBConstants.RULES_COLUMN_SOURCE_SAM +
-                        " integer," +
-                        DBConstants.RULES_COLUMN_SOURCE_PARAM +
-                        " text)"
-        );
-
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
-    }
 
     public void insertRule(RuleObject rule) {
 

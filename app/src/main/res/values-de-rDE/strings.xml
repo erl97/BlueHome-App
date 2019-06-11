@@ -40,4 +40,6 @@
     <string name="give_device_name">"Geben Sie Ihrem neuen Gerät einen Namen: "</string>
     <string name="type">Typ</string>
     <string name="error_not_available">Gerät nicht erreichbar</string>
+    <string name="rules">Regeln</string>
+    <string name="devices">Geräte</string>
 </resources>

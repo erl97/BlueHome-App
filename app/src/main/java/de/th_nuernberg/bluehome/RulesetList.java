@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
@@ -31,28 +32,39 @@ public class RulesetList extends AppCompatActivity {
     private FloatingActionButton deleteButton, addButton;
     private RuleSetStorageManager storageManager = new RuleSetStorageManager(this);
     private RuleSetListAdapter list_adapter;
+    private RulesetObject testObject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        this.setTitle(R.string.rules);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_device_list);
+        setContentView(R.layout.activity_ruleset_list);
+
+        rulesets = new ArrayList<>();
+
+        testObject = new RulesetObject();
+        testObject.setName("Test Set");
+        testObject.setDev1(new BlueHomeDevice("AB:CD:EF:GH:IJ:KL", "Dev 1"));
+        testObject.setDev2(new BlueHomeDevice("12:34:56:78:90:XY", "Dev 2"));
+        testObject.getDev1().setImgID(R.drawable.bluehome_node_1);
+        testObject.getDev2().setImgID(R.drawable.bluehome_node_2);
+        testObject.getDev1().setShownName("Device 1");
+        testObject.getDev2().setShownName("Device 2");
 
         //get Views
         deleteButton = (FloatingActionButton) findViewById(R.id.ruleset_list_delete);
         addButton = (FloatingActionButton) findViewById(R.id.ruleset_list_add);
         list = findViewById(R.id.ruleset_list);
 
-        DecimalFormat df = new DecimalFormat("00");
-        BlueHomeDevice tmp;
-
+        //rulesets.add(testObject);
         rulesets = storageManager.getAllRulessets();
 
         list_adapter = new RuleSetListAdapter(this, rulesets);
               list.setAdapter(list_adapter);
 
 
-       /* list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        /*list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent i = new Intent(RulesetList.this, EditRuleset.class);
@@ -76,12 +88,13 @@ public class RulesetList extends AppCompatActivity {
                     list_adapter.setDeleteActive(true);
                 } else if ((rulesets.size() > 0) && (list_adapter.isDeleteActive())) {
 
+                    Log.i("RulesetList", "deleting...");
                     //TODO: ask for sure
                     CheckBox cb;
                     for (int x = 0; x < list.getChildCount() ;x++){
-                        cb = (CheckBox)list.getChildAt(x).findViewById(R.id.device_list_delete);
+                        cb = (CheckBox)list.getChildAt(x).findViewById(R.id.ruleset_list_delete);
                         if(cb.isChecked()){
-                            storageManager.deleteRuleSet(rulesets.get(x).getRulesetID());
+                            //storageManager.deleteRuleSet(rulesets.get(x).getRulesetID());
                         }
                     }
 
@@ -94,7 +107,7 @@ public class RulesetList extends AppCompatActivity {
                 else
                     deleteButton.setImageDrawable(getDrawable(R.drawable.delete));
 
-                rulesets = storageManager.getAllRulessets();
+                //rulesets = storageManager.getAllRulessets();
                 list_adapter.setNewList(rulesets);
                 list_adapter.notifyDataSetChanged();
                 list.deferNotifyDataSetChanged();
@@ -115,7 +128,7 @@ public class RulesetList extends AppCompatActivity {
     protected void onResume()
     {
         super.onResume();
-        rulesets = storageManager.getAllRulessets();
+        //rulesets = storageManager.getAllRulessets();
         list_adapter.setNewList(rulesets);
         list_adapter.notifyDataSetChanged();
         list.deferNotifyDataSetChanged();

@@ -17,6 +17,8 @@ import android.view.WindowManager;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import de.th_nuernberg.bluehome.BlueHomeDatabase.DatabaseInitiator;
+
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 
 /**

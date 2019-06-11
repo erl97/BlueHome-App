@@ -39,4 +39,6 @@
     <string name="save">Save</string>
     <string name="type">Type</string>
     <string name="error_not_available">Device not reachable</string>
+    <string name="rules">Rules</string>
+    <string name="devices">Devices</string>
 </resources>

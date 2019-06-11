@@ -4,43 +4,43 @@
     android:layout_height="wrap_content">
 
     <CheckBox
-        android:id="@+id/device_list_delete"
+        android:id="@+id/ruleset_list_delete"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:textColor="@color/colorAccent"
+        android:layout_alignParentLeft="true"
         android:theme="@style/CheckBox"/>
 
     <ImageView
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:id="@+id/device_list_img"
-        android:layout_toRightOf="@id/device_list_delete"/>
+        android:id="@+id/ruleset_list_img"
+        android:layout_toRightOf="@id/ruleset_list_delete"/>
 
     <ImageView
-        android:id="@+id/device_list_img_2"
+        android:id="@+id/ruleset_list_img_2"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginRight="8dp"/>
+        android:layout_marginRight="8dp"
+        android:layout_alignParentRight="true"/>
 
     <TextView
-        android:id="@+id/device_list_name"
+        android:id="@+id/ruleset_list_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20dp"
         android:layout_marginTop="2dp"
-        android:layout_toRightOf="@id/device_list_img"
-        android:layout_marginLeft="8dp"
+        android:layout_centerHorizontal="true"
         android:text="test3" />
 
     <TextView
-        android:id="@+id/device_list_mac"
+        android:id="@+id/ruleset_list_mac"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="10dp"
-        android:layout_below="@id/device_list_name"
-        android:layout_alignStart="@id/device_list_name"
+        android:layout_below="@id/ruleset_list_name"
         android:layout_marginTop="2dp"
         android:layout_marginBottom="2dp"
-        android:layout_marginLeft="8dp"
+        android:layout_centerHorizontal="true"
         android:text="test2" />
 </RelativeLayout>

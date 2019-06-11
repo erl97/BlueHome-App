@@ -124,7 +124,7 @@ public class StartActivity extends AppCompatActivity {
     }
 
     public void menu1_pressed(View view){
-        Intent intent = new Intent(this, ManAddDev.class);
+        Intent intent = new Intent(this, RulesetList.class);
         startActivity(intent);
 
     }

@@ -17,46 +17,14 @@ import de.th_nuernberg.bluehome.BlueHomeDevice;
  *
  * @author Philipp Herrmann
  */
-public class BlueHomeDeviceStorageManager extends SQLiteOpenHelper {
+public class BlueHomeDeviceStorageManager extends DatabaseInitiator {
 
 
     public BlueHomeDeviceStorageManager(Context context) {
-        super(context, DBConstants.DATABASE_NAME , null, 1);
+        super(context);
     }
 
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        // TODO Auto-generated method stub
-        db.execSQL(
-                "create table " +
-                        DBConstants.DEVICES_TABLE_NAME +
-                        " (" +
-                        DBConstants.DEVICES_COLUMN_REAL_NAME +
-                        " text," +
-                        DBConstants.DEVICES_COLUMN_SHOWN_NAME +
-                        " text," +
-                        DBConstants.DEVICES_COLUMN_MAC +
-                        " text primary key," +
-                        DBConstants.DEVICES_COLUMN_IMG_ID +
-                        " integer," +
-                        DBConstants.DEVICES_COLUMN_NODE_TYPE +
-                        " integer)"
-        );
-    }
 
-    /**
-     *
-     * @param db
-     * @param oldVersion
-     * @param newVersion
-     */
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // TODO Auto-generated method stub
-        db.execSQL("DROP TABLE IF EXISTS " + DBConstants.DEVICES_TABLE_NAME);
-        onCreate(db);
-    }
 
     /**
      * This Method inserts a new Device into the Database

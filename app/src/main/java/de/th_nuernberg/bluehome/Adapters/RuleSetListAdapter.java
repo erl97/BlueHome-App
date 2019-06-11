@@ -58,11 +58,11 @@ public class RuleSetListAdapter extends BaseAdapter {
         LayoutInflater inflater=context.getLayoutInflater();
         View rowView = inflater.inflate(R.layout.ruleset_row_layout, null, true);
 
-        TextView nameText = (TextView) rowView.findViewById(R.id.device_list_name);
-        ImageView imageView = (ImageView) rowView.findViewById(R.id.device_list_img);
-        TextView macText = (TextView) rowView.findViewById(R.id.device_list_mac);
-        CheckBox deleteBox = (CheckBox) rowView.findViewById(R.id.device_list_delete);
-        ImageView imageView2 = (ImageView) rowView.findViewById(R.id.device_list_img_2);
+        TextView nameText = (TextView) rowView.findViewById(R.id.ruleset_list_name);
+        ImageView imageView = (ImageView) rowView.findViewById(R.id.ruleset_list_img);
+        TextView macText = (TextView) rowView.findViewById(R.id.ruleset_list_mac);
+        CheckBox deleteBox = (CheckBox) rowView.findViewById(R.id.ruleset_list_delete);
+        ImageView imageView2 = (ImageView) rowView.findViewById(R.id.ruleset_list_img_2);
 
         nameText.setText(rulesets.get(position).getName());
         macText.setText(rulesets.get(position).getDev1().getShownName() + " -> " + rulesets.get(position).getDev2().getShownName());

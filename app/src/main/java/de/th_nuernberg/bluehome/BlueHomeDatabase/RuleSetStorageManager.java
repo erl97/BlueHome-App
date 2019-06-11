@@ -17,48 +17,19 @@ import de.th_nuernberg.bluehome.RuleProcessObjects.SourceObject;
 /**
  * RuleSetStorageManager (RuleActionStorageManager
  */
-public class RuleSetStorageManager extends SQLiteOpenHelper {
+public class RuleSetStorageManager extends DatabaseInitiator {
 
     private ActionStorageManager asm;
     private RuleStorageManager rsm;
     private BlueHomeDeviceStorageManager dsm;
 
     public RuleSetStorageManager(Context context){
-        super(context, DBConstants.DATABASE_NAME , null, 1);
+        super(context);
         asm = new ActionStorageManager(context);
         rsm = new RuleStorageManager(context);
         dsm = new BlueHomeDeviceStorageManager(context);
     }
 
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        db.execSQL(
-                "create table " +
-                        DBConstants.RULESET_TABLE_NAME +
-                        " (" +
-                        DBConstants.RULESET_COLUMN_RULESET_ID +
-                        " integer primary key," +
-                        DBConstants.RULESET_COLUMN_APP_RULE_1_ID +
-                        " integer," +
-                        DBConstants.RULESET_COLUMN_APP_RULE_2_ID +
-                        " integer," +
-                        DBConstants.RULESET_COLUMN_APP_ACTION_1_ID +
-                        " integer," +
-                        DBConstants.RULESET_COLUMN_APP_ACITON_2_ID +
-                        " integer," +
-                        DBConstants.RULESET_COLUMN_DEV_1_MAC +
-                        " text," +
-                        DBConstants.RULESET_COLUMN_DEV_2_MAC +
-                        " text," +
-                        DBConstants.RULESET_COLUMN_NAME +
-                        " text)"
-        );
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
-    }
 
     /**
      * This Method inserts a new Ruleset into the Database
@@ -159,8 +130,10 @@ public class RuleSetStorageManager extends SQLiteOpenHelper {
         ArrayList<RulesetObject> array_list = new ArrayList<RulesetObject>();
         RulesetObject tmp;
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res =  db.rawQuery( "select * from " + DBConstants.RULES_TABLE_NAME, null );
+        Cursor res =  db.rawQuery( "select * from " + DBConstants.RULESET_TABLE_NAME, null );
         res.moveToFirst();
+
+        Log.i("RuleSetStorageManager", "preparing ArrayList<>");
 
         while(res.isAfterLast() == false){
             tmp = new RulesetObject();
