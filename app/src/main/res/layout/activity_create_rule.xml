@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CreateRule">
+    android:background="@color/colorBackground"
+    tools:context=".CreateRuleset">
 
     <LinearLayout
         android:id="@+id/linearLayout2"
@@ -19,18 +20,18 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/textView6"
+            android:id="@+id/create_ruleset_tf_source_device"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="TextView" />
+            android:text="@string/source_device" />
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/create_ruleset_tf_target_device"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="TextView" />
+            android:text="@string/target_device" />
     </LinearLayout>
 
     <LinearLayout
@@ -46,22 +47,22 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout6">
 
         <TextView
-            android:id="@+id/textView6"
+            android:id="@+id/create_ruleset_tf_initiator_action"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="TextView" />
+            android:text="@string/initiator_action" />
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/create_ruleset_tf_actor_action"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="TextView" />
+            android:text="@string/actor_action" />
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="394dp"
+        android:layout_width="0dp"
         android:layout_height="77dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -72,21 +73,23 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout5">
 
         <Spinner
-            android:id="@+id/spinner8"
+            android:id="@+id/create_ruleset_spin_initiator_action"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:popupBackground="@color/colorBackground" />
 
         <Spinner
-            android:id="@+id/spinner7"
+            android:id="@+id/create_ruleset_spin_actor_action"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:popupBackground="@color/colorBackground" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/linearLayout6"
-        android:layout_width="394dp"
+        android:layout_width="0dp"
         android:layout_height="88dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -97,21 +100,23 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout4">
 
         <Spinner
-            android:id="@+id/spinner8"
+            android:id="@+id/create_ruleset_spin_initiator"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:popupBackground="@color/colorBackground" />
 
         <Spinner
-            android:id="@+id/spinner7"
+            android:id="@+id/create_ruleset_spin_actor"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:popupBackground="@color/colorBackground" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/linearLayout3"
-        android:layout_width="394dp"
+        android:layout_width="0dp"
         android:layout_height="38dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -122,16 +127,18 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
 
         <Spinner
-            android:id="@+id/spinner8"
+            android:id="@+id/create_ruleset_spin_source_device"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:popupBackground="@color/colorBackground" />
 
         <Spinner
-            android:id="@+id/spinner7"
+            android:id="@+id/create_ruleset_spin_target_device"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:popupBackground="@color/colorBackground" />
     </LinearLayout>
 
     <LinearLayout
@@ -147,17 +154,17 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
 
         <TextView
-            android:id="@+id/textView6"
+            android:id="@+id/create_ruleset_tf_initiator"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="TextView" />
+            android:text="@string/initiator" />
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/create_ruleset_tf_actor"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="TextView" />
+            android:text="@string/actor" />
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

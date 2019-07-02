@@ -44,5 +44,19 @@
             android:layout_height="1dp"
             android:background="@android:color/darker_gray"/>
 
+        <Button
+            android:id="@+id/app_settings_manual_add"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:background="@android:color/transparent"
+            android:gravity="left|center_vertical"
+            android:text="@string/manual_add_device" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
+
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

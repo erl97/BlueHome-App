@@ -115,13 +115,13 @@ public class RulesetList extends AppCompatActivity {
             }
         });
 
-        /*addButton.setOnClickListener(new View.OnClickListener() {
+        addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(RulesetList.this, CreateRuleset.class);
                 startActivity(i);
             }
-        });*/
+        });
     }
 
     @Override

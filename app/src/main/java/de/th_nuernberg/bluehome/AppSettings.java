@@ -17,6 +17,7 @@ public class AppSettings extends AppCompatActivity {
 
     private TextView importView;
     private TextView exportView;
+    private TextView manAddView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,11 +27,20 @@ public class AppSettings extends AppCompatActivity {
 
         importView = (TextView)findViewById(R.id.app_settings_import);
         exportView = (TextView)findViewById(R.id.app_settings_export);
+        manAddView = (TextView)findViewById(R.id.app_settings_manual_add);
 
         exportView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(AppSettings.this, ExportData.class);
+                startActivity(i);
+            }
+        });
+
+        manAddView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(AppSettings.this, ManAddDev.class);
                 startActivity(i);
             }
         });
