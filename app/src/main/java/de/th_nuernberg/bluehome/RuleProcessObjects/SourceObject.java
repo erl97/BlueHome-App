@@ -9,7 +9,7 @@ package de.th_nuernberg.bluehome.RuleProcessObjects;
 public class SourceObject {
     private byte sourceSAM;
     private byte sourceID;
-    private byte[] param = new byte[20];
+    private byte[] param = new byte[19];
 
     public byte getSourceSAM() {
         return sourceSAM;

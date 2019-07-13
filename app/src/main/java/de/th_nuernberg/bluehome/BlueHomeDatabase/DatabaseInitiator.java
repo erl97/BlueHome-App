@@ -70,6 +70,8 @@ public class DatabaseInitiator extends SQLiteOpenHelper {
                         DBConstants.DEVICES_COLUMN_IMG_ID +
                         " integer," +
                         DBConstants.DEVICES_COLUMN_NODE_TYPE +
+                        " integer," +
+                        DBConstants.DEVICES_COLUMN_MAC_ID +
                         " integer)"
         );
 

@@ -65,10 +65,16 @@ public class RuleSetListAdapter extends BaseAdapter {
         ImageView imageView2 = (ImageView) rowView.findViewById(R.id.ruleset_list_img_2);
 
         nameText.setText(rulesets.get(position).getName());
-        macText.setText(rulesets.get(position).getDev1().getShownName() + " -> " + rulesets.get(position).getDev2().getShownName());
+        if(rulesets.get(position).getDev2() != null)
+            macText.setText(rulesets.get(position).getDev1().getShownName() + " -> " + rulesets.get(position).getDev2().getShownName());
+        else
+            macText.setText(rulesets.get(position).getDev1().getShownName() + " -> " + rulesets.get(position).getDev1().getShownName());
 
         imageView.setImageResource(rulesets.get(position).getDev1().getImgID());
-        imageView2.setImageResource(rulesets.get(position).getDev2().getImgID());
+        if(rulesets.get(position).getDev2() != null)
+            imageView2.setImageResource(rulesets.get(position).getDev2().getImgID());
+        else
+            imageView2.setImageResource(rulesets.get(position).getDev1().getImgID());
 
         if(deleteActive)
             deleteBox.setVisibility(View.VISIBLE);

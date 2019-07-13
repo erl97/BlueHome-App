@@ -16,8 +16,13 @@ import java.util.ArrayList;
 
 import de.th_nuernberg.bluehome.Adapters.DeviceListAdapter;
 import de.th_nuernberg.bluehome.Adapters.RuleSetListAdapter;
+import de.th_nuernberg.bluehome.BLEManagement.BLEDataExchangeManager;
+import de.th_nuernberg.bluehome.BlueHomeDatabase.ActionStorageManager;
 import de.th_nuernberg.bluehome.BlueHomeDatabase.BlueHomeDeviceStorageManager;
 import de.th_nuernberg.bluehome.BlueHomeDatabase.RuleSetStorageManager;
+import de.th_nuernberg.bluehome.BlueHomeDatabase.RuleStorageManager;
+import de.th_nuernberg.bluehome.RuleProcessObjects.ActionObject;
+import de.th_nuernberg.bluehome.RuleProcessObjects.RuleObject;
 import de.th_nuernberg.bluehome.RuleProcessObjects.RulesetObject;
 
 /**
@@ -29,8 +34,12 @@ public class RulesetList extends AppCompatActivity {
 
     private ListView list;
     private ArrayList<RulesetObject> rulesets;
-    private FloatingActionButton deleteButton, addButton;
+    private FloatingActionButton deleteButton, addButton, downloadButton;
     private RuleSetStorageManager storageManager = new RuleSetStorageManager(this);
+    private RuleStorageManager rsm = new RuleStorageManager(this);
+    private ActionStorageManager asm = new ActionStorageManager(this);
+    private BLEDataExchangeManager bleman = new BLEDataExchangeManager();
+    private BlueHomeDeviceStorageManager bhsm = new BlueHomeDeviceStorageManager(this);
     private RuleSetListAdapter list_adapter;
     private RulesetObject testObject;
 
@@ -55,6 +64,7 @@ public class RulesetList extends AppCompatActivity {
         //get Views
         deleteButton = (FloatingActionButton) findViewById(R.id.ruleset_list_delete);
         addButton = (FloatingActionButton) findViewById(R.id.ruleset_list_add);
+        downloadButton = (FloatingActionButton) findViewById(R.id.ruleset_list_download);
         list = findViewById(R.id.ruleset_list);
 
         //rulesets.add(testObject);
@@ -73,7 +83,12 @@ public class RulesetList extends AppCompatActivity {
             }
         });*/
 
-
+        downloadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                writeAll();
+            }
+        });
 
         //Delete Entries from list:
         deleteButton.setOnClickListener(new View.OnClickListener() {
@@ -94,7 +109,7 @@ public class RulesetList extends AppCompatActivity {
                     for (int x = 0; x < list.getChildCount() ;x++){
                         cb = (CheckBox)list.getChildAt(x).findViewById(R.id.ruleset_list_delete);
                         if(cb.isChecked()){
-                            //storageManager.deleteRuleSet(rulesets.get(x).getRulesetID());
+                            storageManager.deleteRuleSet(rulesets.get(x).getRulesetID());
                         }
                     }
 
@@ -107,7 +122,7 @@ public class RulesetList extends AppCompatActivity {
                 else
                     deleteButton.setImageDrawable(getDrawable(R.drawable.delete));
 
-                //rulesets = storageManager.getAllRulessets();
+                rulesets = storageManager.getAllRulessets();
                 list_adapter.setNewList(rulesets);
                 list_adapter.notifyDataSetChanged();
                 list.deferNotifyDataSetChanged();
@@ -128,9 +143,42 @@ public class RulesetList extends AppCompatActivity {
     protected void onResume()
     {
         super.onResume();
-        //rulesets = storageManager.getAllRulessets();
+        rulesets = storageManager.getAllRulessets();
         list_adapter.setNewList(rulesets);
         list_adapter.notifyDataSetChanged();
         list.deferNotifyDataSetChanged();
+    }
+
+    private void writeAll()
+    {
+        if(storageManager.getAllRulessets().size() > 0)
+        {
+            ArrayList<RuleObject> rules = rsm.getAllRules();
+            ArrayList<ActionObject> actions = asm.getAllActions();
+            ArrayList<BlueHomeDevice> toUpdate = new ArrayList<>();
+            Log.i("RulesetList", "Rules size: " + rules.size());
+            for(RuleObject ro : rules) {
+                Log.i("RulesetList", "" + ro.getParamComp()[0]);
+                bleman.programRule(storageManager.getDevForRule(ro), ro, this);
+                if(!toUpdate.contains(storageManager.getDevForRule(ro)))
+                    toUpdate.add(storageManager.getDevForRule(ro));
+            }
+            for(ActionObject ao : actions) {
+                bleman.programAction(storageManager.getDevForAction(ao), ao, this);
+                if(!toUpdate.contains(storageManager.getDevForAction(ao)))
+                    toUpdate.add(storageManager.getDevForAction(ao));
+            }
+
+            ArrayList<BlueHomeDevice> devs = bhsm.getAllDevices();
+
+            for(BlueHomeDevice dev : toUpdate) {
+                for (BlueHomeDevice d : devs)
+                    if(d.getMacId() != 0) {
+                        Log.i("RulesetList", "mac ID: " + d.getMacId() + " device: " + dev.getShownName());
+                        bleman.programMAC(dev, d.getMacId(), d.getMacAddress(), this);
+                    }
+
+            }
+        }
     }
 }

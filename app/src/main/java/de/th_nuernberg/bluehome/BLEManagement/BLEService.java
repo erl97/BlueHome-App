@@ -296,7 +296,7 @@ public class BLEService extends Service {
 
         @Override
         public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-            Log.i(DEBUG_TAG, "Characteristic written");
+            Log.i(DEBUG_TAG, "Characteristic written, buffer size: " + buffer.size());
             if(status != BluetoothGatt.GATT_SUCCESS)
                 notifyFailed(gatt, ErrorObject.ERROR_CHAR_WRITE);
 

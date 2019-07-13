@@ -19,6 +19,7 @@ public class BlueHomeDevice {
     private int imgID = R.drawable.bluehome_device;
     private boolean deleteActive = false;
     boolean toRemove = false;
+    private byte macId;
 
     public BlueHomeDevice(String address, String deviceName) {
         this.address = address;
@@ -33,8 +34,18 @@ public class BlueHomeDevice {
         this.imgID = dev.getImgID();
         this.deleteActive = dev.isDeleteActive();
         this.toRemove = dev.isToRemove();
+        this.macId = dev.getMacId();
     }
 
+    public byte getMacId()
+    {
+        return macId;
+    }
+
+    public void setMacId(byte macId)
+    {
+        this.macId = macId;
+    }
 
     /**
      * sets the name that is shown in device list and configuration parts of the app.

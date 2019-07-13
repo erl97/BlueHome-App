@@ -40,9 +40,12 @@ public class BlueHomeDeviceStorageManager extends DatabaseInitiator {
         contentValues.put(DBConstants.DEVICES_COLUMN_MAC, dev.getMacAddress());
         contentValues.put(DBConstants.DEVICES_COLUMN_IMG_ID, dev.getImgID());
         contentValues.put(DBConstants.DEVICES_COLUMN_NODE_TYPE, dev.getNodeType());
+        contentValues.put(DBConstants.DEVICES_COLUMN_MAC_ID, getNextFreeMacId());
         db.insert(DBConstants.DEVICES_TABLE_NAME, null, contentValues);
         return true;
     }
+
+
 
     /**
      * Gets Data from the Database at specified MAC Address
@@ -68,6 +71,7 @@ public class BlueHomeDeviceStorageManager extends DatabaseInitiator {
             tmp.setShownName(res.getString(res.getColumnIndex(DBConstants.DEVICES_COLUMN_SHOWN_NAME)));
             tmp.setImgID(res.getInt(res.getColumnIndex(DBConstants.DEVICES_COLUMN_IMG_ID)));
             tmp.setNodeType(res.getInt(res.getColumnIndex(DBConstants.DEVICES_COLUMN_NODE_TYPE)));
+            tmp.setMacId((byte)res.getInt(res.getColumnIndex(DBConstants.DEVICES_COLUMN_MAC_ID)));
             return tmp;
         } else {
             Log.e("StorageManager", "didn't move");
@@ -98,6 +102,7 @@ public class BlueHomeDeviceStorageManager extends DatabaseInitiator {
         contentValues.put(DBConstants.DEVICES_COLUMN_MAC, dev.getMacAddress());
         contentValues.put(DBConstants.DEVICES_COLUMN_IMG_ID, dev.getImgID());
         contentValues.put(DBConstants.DEVICES_COLUMN_NODE_TYPE, dev.getNodeType());
+        contentValues.put(DBConstants.DEVICES_COLUMN_MAC_ID, dev.getMacId());
         db.update(DBConstants.DEVICES_TABLE_NAME, contentValues, DBConstants.DEVICES_COLUMN_MAC + " = ? ", new String[] { dev.getMacAddress() } );
         return true;
     }
@@ -130,10 +135,31 @@ public class BlueHomeDeviceStorageManager extends DatabaseInitiator {
             tmp.setShownName(res.getString(res.getColumnIndex(DBConstants.DEVICES_COLUMN_SHOWN_NAME)));
             tmp.setImgID(res.getInt(res.getColumnIndex(DBConstants.DEVICES_COLUMN_IMG_ID)));
             tmp.setNodeType(res.getInt(res.getColumnIndex(DBConstants.DEVICES_COLUMN_NODE_TYPE)));
+            tmp.setMacId((byte)res.getInt(res.getColumnIndex(DBConstants.DEVICES_COLUMN_MAC_ID)));
             array_list.add(tmp);
             res.moveToNext();
         }
         return array_list;
+    }
+
+    public byte getNextFreeMacId(){
+        ArrayList<BlueHomeDevice> devs = this.getAllDevices();
+        boolean foundFree;
+        for(byte i = 1; i < 32; i++)
+        {
+            foundFree = true;
+            for (BlueHomeDevice s : devs) {
+                if (s.getMacId() == i) {
+                    foundFree = false;
+                    break;
+                }
+            }
+            if(foundFree) {
+                Log.i("BlueHomeDeviceStorageManager", "found " + i);
+                return i;
+            }
+        }
+        return 0;
     }
 }
 

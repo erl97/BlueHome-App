@@ -13,7 +13,7 @@ public class RuleObject {
     private byte actionMemID;
     private SourceObject toComp;
     private byte appRuleID;
-    private byte[] paramComp = new byte[20];
+    private byte[] paramComp = new byte[19];
 
     public byte getAppRuleID() {
         return appRuleID;
@@ -92,6 +92,12 @@ public class RuleObject {
      */
     public void setParamComp(byte[] paramComp) {
         this.paramComp = paramComp;
+    }
+
+    public void setParamComp(byte value, int position)
+    {
+        if(position >= 0 && position < 19)
+            this.paramComp[position] = value;
     }
 
     public RuleObject(){

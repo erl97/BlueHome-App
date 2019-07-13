@@ -155,7 +155,6 @@ public class StartActivity extends AppCompatActivity {
             // Android M Permission check 
             if (this.checkSelfPermission(Manifest.permission.BLUETOOTH_ADMIN) != PackageManager.PERMISSION_GRANTED) {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialogStyle);
-                //TODO: Language
                 builder.setTitle(R.string.acces_bluetooth_title);
                 builder.setMessage(R.string.acces_bluetooth_text);
                 builder.setPositiveButton(android.R.string.ok, null);

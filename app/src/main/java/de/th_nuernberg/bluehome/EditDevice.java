@@ -95,7 +95,7 @@ public class EditDevice extends AppCompatActivity {
         });
 
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
-                new IntentFilter("FAIL"));
+                new IntentFilter("WRITE_FAIL"));
 
     }
 
@@ -105,46 +105,34 @@ public class EditDevice extends AppCompatActivity {
     }
 
     public void writeRule(View view){
-        SourceObject tmpSource = new SourceObject();
-        byte[] tmpBytes = {1,2,3,4,5,6};
-        byte[] tmpCases = {RPC.COMP_EQUALS, RPC.COMP_SMALLER_EQUAL, RPC.COMP_DOESNT_MATTER, RPC.COMP_DOESNT_MATTER, RPC.COMP_DOESNT_MATTER, RPC.COMP_DOESNT_MATTER};
         RuleObject rule = new RuleObject();
-        rule.setActionMemID((byte)1);
-        rule.setParamComp(tmpCases);
-        rule.setRuleMemID((byte)5);
-        rule.setToComp(tmpSource);
-        rule.getToComp().setParams(tmpBytes);
-        rule.getToComp().setSourceID((byte)2);
-        rule.getToComp().setSourceSAM(RPC.SAM_BUTTON);
+        rule.setRuleMemID((byte)0x01);
+        rule.setActionMemID((byte)0x01);
+        rule.setParamComp((byte)0x02, 0);
+        rule.setToComp(new SourceObject());
+        rule.getToComp().setParam(0,(byte)0);
+        rule.getToComp().setSourceSAM((byte)0x05);
+        rule.getToComp().setSourceID((byte)0x04);
 
 
-        bleman.programMAC(toEdit, (byte)1, "AB:CD:EF:12:34:56", this);
+        bleman.programRule(toEdit, rule, this);
+
+        //bleman.programMAC(toEdit, (byte)1, "AB:CD:EF:12:34:56", this);
         //Log.i("StartAct", ""+bleman.writeRule(toEdit, rule));
     }
 
     public void writeAction(View view) {
-        ActionObject tmpAct = new ActionObject();
-        byte[] tmpBytes = {0x01};
-        tmpAct.setActionID((byte)1);
-        tmpAct.setActionMemID((byte)5);
-        tmpAct.setActionSAM((byte)3);
-        tmpAct.setParam(tmpBytes);
-        tmpAct.setParamMask(0b00000000000000000000101010101010);
+        byte[] test = new byte[19];
+        test[0] = (byte)0x01;
+        test[1] = (byte)0x10;
+        ActionObject act = new ActionObject();
+        act.setActionMemID((byte)1);
+        act.setActionSAM((byte)0x0A);
+        act.setActionID((byte)0x01);
+        act.setParamMask(0);
+        act.setParam(test);
 
-        //bleman.writeAction(toEdit, tmpAct);
-        Log.i("paramPart", "" + tmpAct.getMaskPart(0));
-
-        BLEBufferElement tmpBuf = new BLEBufferElement(toEdit, tmpBytes, BLEService.UUID_DIRECT_PARAM, BLEService.UUID_DIRECT_SERV, "FAIL");
-
-        byte[] tmpBytes2 = {0x0A,0x01};
-        BLEBufferElement tmpBuf2 = new BLEBufferElement(toEdit, tmpBytes2, BLEService.UUID_DIRECT_OPTIONS, BLEService.UUID_DIRECT_SERV, "FAIL");
-        Log.i("ActionButton", "created Buffer Element");
-        if(bleman != null) {
-            bleman.addToBuffer(tmpBuf, this);
-            bleman.addToBuffer(tmpBuf2, this);
-        }
-        else
-            Log.i("ActionButton", "NullPointer");
+        bleman.programAction(toEdit, act, this);
 
     }
 

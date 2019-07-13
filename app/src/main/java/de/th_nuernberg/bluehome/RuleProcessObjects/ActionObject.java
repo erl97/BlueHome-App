@@ -11,7 +11,7 @@ public class ActionObject {
     private byte actionID;
     private int paramMask;
     private byte appActionID;
-    private byte[] param = new byte[20];
+    private byte[] param = new byte[19];
 
     public ActionObject(){
 
@@ -57,6 +57,12 @@ public class ActionObject {
 
     public void setParam(byte[] param) {
         this.param = param;
+    }
+
+    public void setParam(byte value, int paramNum) {
+        if(paramNum < 19) {
+            this.param[paramNum] = value;
+        }
     }
 
     public byte getMaskPart(int part){

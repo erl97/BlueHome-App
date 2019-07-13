@@ -10,14 +10,13 @@
     <LinearLayout
         android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
-        android:layout_height="26dp"
+        android:layout_height="20dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/create_ruleset_tf_rule_name">
 
         <TextView
             android:id="@+id/create_ruleset_tf_source_device"
@@ -37,7 +36,7 @@
     <LinearLayout
         android:id="@+id/linearLayout5"
         android:layout_width="match_parent"
-        android:layout_height="52dp"
+        android:layout_height="20dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
@@ -62,8 +61,9 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/linearLayout7"
         android:layout_width="0dp"
-        android:layout_height="77dp"
+        android:layout_height="44dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
@@ -77,20 +77,20 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:popupBackground="@color/colorBackground" />
+            android:popupBackground="@color/colorPrimaryDark" />
 
         <Spinner
             android:id="@+id/create_ruleset_spin_actor_action"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:popupBackground="@color/colorBackground" />
+            android:popupBackground="@color/colorPrimaryDark" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/linearLayout6"
         android:layout_width="0dp"
-        android:layout_height="88dp"
+        android:layout_height="43dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
@@ -104,14 +104,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:popupBackground="@color/colorBackground" />
+            android:popupBackground="@color/colorPrimaryDark" />
 
         <Spinner
             android:id="@+id/create_ruleset_spin_actor"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:popupBackground="@color/colorBackground" />
+            android:popupBackground="@color/colorPrimaryDark" />
     </LinearLayout>
 
     <LinearLayout
@@ -131,20 +131,20 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:popupBackground="@color/colorBackground" />
+            android:popupBackground="@color/colorPrimaryDark" />
 
         <Spinner
             android:id="@+id/create_ruleset_spin_target_device"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:popupBackground="@color/colorBackground" />
+            android:popupBackground="@color/colorPrimaryDark" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/linearLayout4"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="20dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
@@ -167,4 +167,109 @@
             android:layout_weight="1"
             android:text="@string/actor" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/create_ruleset_tf_compare"
+        android:layout_width="193dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Vergleich"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout7" />
+
+    <TextView
+        android:id="@+id/create_ruleset_tf_target_number"
+        android:layout_width="192dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="Nummer"
+        app:layout_constraintBottom_toBottomOf="@+id/create_ruleset_tf_compare"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/create_ruleset_tf_compare"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout7" />
+
+    <Spinner
+        android:id="@+id/create_ruleset_spin_compare"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/create_ruleset_tf_target_number_input"
+        app:layout_constraintEnd_toEndOf="@+id/create_ruleset_tf_compare"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/create_ruleset_tf_compare"
+        android:popupBackground="@color/colorPrimaryDark" />
+
+    <EditText
+        android:id="@+id/create_ruleset_tf_target_number_input"
+        android:layout_width="182dp"
+        android:layout_height="46dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="0"
+        android:textColor="@color/colorAccent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/create_ruleset_spin_compare"
+        app:layout_constraintTop_toBottomOf="@+id/create_ruleset_tf_target_number" />
+
+    <Button
+        android:id="@+id/create_ruleset_btn_submit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:onClick="createNewRuleset"
+        android:text="Button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/create_ruleset_tf_source_number"
+        android:layout_width="0dp"
+        android:layout_height="27dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Nummer"
+        app:layout_constraintEnd_toEndOf="@+id/create_ruleset_spin_compare"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/create_ruleset_spin_compare" />
+
+    <EditText
+        android:id="@+id/create_ruleset_tf_source_number_input"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="0"
+        android:textColor="@color/colorAccent"
+        app:layout_constraintEnd_toEndOf="@+id/create_ruleset_tf_source_number"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/create_ruleset_tf_source_number" />
+
+    <EditText
+        android:id="@+id/create_ruleset_tf_rule_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Rule Name"
+        android:textColor="@color/colorAccent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </android.support.constraint.ConstraintLayout>
