@@ -23,10 +23,11 @@ public class NodeInfo {
     private ArrayList<SAM> node1SAMs;
     private ArrayList<SAM> node2SAMs;
     private ArrayList<SAM> node3SAMs;
+    private ArrayList<SAM> node4SAMs;
 
     private ArrayList<ArrayList<SAM>> SAMs;
 
-    private final static int MAX_NODES = 3;
+    private static int MAX_NODES;
 
     public NodeInfo(Context context)
     {
@@ -34,9 +35,10 @@ public class NodeInfo {
         node1SAMs = new ArrayList<>();
         node2SAMs = new ArrayList<>();
         node3SAMs = new ArrayList<>();
+        node4SAMs = new ArrayList<>();
         SAMs = new ArrayList<>();
 
-        node1SAMs.add(new RelaisSAM(context));
+        //node1SAMs.add(new PwmSAM(context));
         node1SAMs.add(new GpioSAM(context));
 
         node2SAMs.add(new RelaisSAM(context));
@@ -45,9 +47,15 @@ public class NodeInfo {
         node3SAMs.add(new LightSAM(context));
         node3SAMs.add(new BuzzerSAM(context));
 
+        node4SAMs.add(new RelaisSAM(context));
+        node4SAMs.add(new GpioSAM(context));
+
         SAMs.add(node1SAMs);
         SAMs.add(node2SAMs);
         SAMs.add(node3SAMs);
+        SAMs.add(node4SAMs);
+
+        MAX_NODES = SAMs.size();
 
         allSAMs.add(new BuzzerSAM(context));
         allSAMs.add(new CurrentSAM(context));
