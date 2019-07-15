@@ -116,4 +116,10 @@
     <string name="button_number">Button Number</string>
     <string name="relais">Relay</string>
     <string name="relay_number">Relay number</string>
+    <string name="create_rule">Create Rule</string>
+    <string name="ruleset_name">Ruleset Name</string>
+    <string name="threshold_value">Threshold Value</string>
+    <string name="rule_info">Rule Details</string>
+    <string name="rule_info_text_1">Rule \"</string>
+    <string name="rule_info_text_2">\" has following Details:</string>
 </resources>

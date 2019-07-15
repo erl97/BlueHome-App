@@ -159,4 +159,14 @@ public class GpioSAM implements SAM {
         return param;
     }
 
+    @Override
+    public int getMaxNum() {
+        return 7;
+    }
+
+    @Override
+    public int getMinNum() {
+        return 0;
+    }
+
 }

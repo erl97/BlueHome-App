@@ -228,81 +228,90 @@ public class CreateRuleset extends AppCompatActivity {
 
     public void createNewRuleset(View view)
     {
-        RulesetObject ruleSet = new RulesetObject();
-
-        ruleSet.setName(((EditText)(findViewById(R.id.create_ruleset_tf_rule_name))).getText().toString());
-
-        if(devs.get(source_device.getSelectedItemPosition() - 1).getMacAddress().equals(devs.get(target_device.getSelectedItemPosition() - 1).getMacAddress()))
+        if(target_device.getSelectedItemPosition() != 0
+                && source_device.getSelectedItemPosition() != 0
+                &&  (byte)Integer.parseInt(valueIn.getText().toString()) >= nodeInfo.getMinNum((devs.get(source_device.getSelectedItemPosition() - 1)).getNodeType(), initiators.get(initiator.getSelectedItemPosition()))
+                &&  (byte)Integer.parseInt(valueIn.getText().toString()) <= nodeInfo.getMaxNum((devs.get(source_device.getSelectedItemPosition() - 1)).getNodeType(), initiators.get(initiator.getSelectedItemPosition()))
+                &&  (byte)Integer.parseInt(valueOut.getText().toString()) >= nodeInfo.getMinNum((devs.get(target_device.getSelectedItemPosition() - 1)).getNodeType(), actors.get(actor.getSelectedItemPosition()))
+                &&  (byte)Integer.parseInt(valueOut.getText().toString()) <= nodeInfo.getMaxNum((devs.get(target_device.getSelectedItemPosition() - 1)).getNodeType(), actors.get(actor.getSelectedItemPosition()))
+        )
         {
-            ruleSet.setDev1(devs.get(source_device.getSelectedItemPosition() - 1));
+            RulesetObject ruleSet = new RulesetObject();
 
-            ruleSet.setAction1(new ActionObject());
-            ruleSet.setRule1(new RuleObject());
-            ruleSet.getRule1().setToComp(new SourceObject());
+            ruleSet.setName(((EditText) (findViewById(R.id.create_ruleset_tf_rule_name))).getText().toString());
+            ruleSet.setRulesetID(ruleSetStorageManager.getNextFreeRulesetId());
 
-            ruleSet.getAction1().setActionID(nodeInfo.getActionID((devs.get(target_device.getSelectedItemPosition() - 1)).getNodeType(), actors.get(actor.getSelectedItemPosition()), actorAction.get(actor_action.getSelectedItemPosition())));
-            ruleSet.getAction1().setActionMemID(ruleSetStorageManager.getNextFreeActionMemId(ruleSet.getDev2()));
-            ruleSet.getAction1().setAppActionID(ruleSetStorageManager.getNextAppActionId((byte)0));
-            ruleSet.getAction1().setParam((byte) Integer.parseInt(valueOut.getText().toString()), 0);
-            ruleSet.getAction1().setParamMask(0);
-            ruleSet.getAction1().setActionSAM(nodeInfo.getSamID(devs.get(target_device.getSelectedItemPosition() - 1).getNodeType(), actors.get(actor.getSelectedItemPosition())));
+            if (devs.get(source_device.getSelectedItemPosition() - 1).getMacAddress().equals(devs.get(target_device.getSelectedItemPosition() - 1).getMacAddress())) {
+                ruleSet.setDev1(devs.get(source_device.getSelectedItemPosition() - 1));
 
-            Log.i("ERRORLOGGERLOL", "dev size " + devs.size() + ", actors size " + actors.size());
+                ruleSet.setAction1(new ActionObject());
+                ruleSet.setRule1(new RuleObject());
+                ruleSet.getRule1().setToComp(new SourceObject());
 
-            ruleSet.getRule1().setParamComp(nodeInfo.getParamCompID(devs.get(source_device.getSelectedItemPosition() - 1).getNodeType(), initiators.get(initiator.getSelectedItemPosition()), operatorsList.get(operators.getSelectedItemPosition())));
-            ruleSet.getRule1().setRuleMemID(ruleSetStorageManager.getNextFreeRuleMemId(ruleSet.getDev1()));
-            ruleSet.getRule1().setActionMemID(ruleSet.getAction1().getActionMemID());
-            ruleSet.getRule1().setAppRuleID(ruleSetStorageManager.getNextAppRuleId((byte)0));
-            ruleSet.getRule1().getToComp().setSourceSAM(nodeInfo.getSamID(devs.get(source_device.getSelectedItemPosition() - 1).getNodeType(), initiators.get(initiator.getSelectedItemPosition())));
-            ruleSet.getRule1().getToComp().setSourceID(nodeInfo.getSourceID(devs.get(source_device.getSelectedItemPosition() - 1).getNodeType(), initiators.get(initiator.getSelectedItemPosition()), initiatorAction.get(initiator_action.getSelectedItemPosition())));
-            ruleSet.getRule1().getToComp().setParams(nodeInfo.getParam(devs.get(source_device.getSelectedItemPosition() - 1).getNodeType(), initiators.get(initiator.getSelectedItemPosition()),(byte)Integer.parseInt(valueIn.getText().toString())));
+                ruleSet.getAction1().setActionID(nodeInfo.getActionID((devs.get(target_device.getSelectedItemPosition() - 1)).getNodeType(), actors.get(actor.getSelectedItemPosition()), actorAction.get(actor_action.getSelectedItemPosition())));
+                ruleSet.getAction1().setActionMemID(ruleSetStorageManager.getNextFreeActionMemId(ruleSet.getDev1(), (byte) 0));
+                ruleSet.getAction1().setAppActionID(ruleSetStorageManager.getNextAppActionId((byte) 0));
+                ruleSet.getAction1().setParam((byte) Integer.parseInt(valueOut.getText().toString()), 0);
+                ruleSet.getAction1().setParamMask(0);
+                ruleSet.getAction1().setActionSAM(nodeInfo.getSamID(devs.get(target_device.getSelectedItemPosition() - 1).getNodeType(), actors.get(actor.getSelectedItemPosition())));
 
-        } else {
-            ruleSet.setAction1(new ActionObject());
-            ruleSet.setAction2(new ActionObject());
-            ruleSet.setRule1(new RuleObject());
-            ruleSet.setRule2(new RuleObject());
-            ruleSet.getRule1().setToComp(new SourceObject());
-            ruleSet.getRule2().setToComp(new SourceObject());
+                Log.i("ERRORLOGGERLOL", "dev size " + devs.size() + ", actors size " + actors.size());
 
-            ruleSet.setDev1(devs.get(source_device.getSelectedItemPosition() - 1));
-            ruleSet.setDev2(devs.get(target_device.getSelectedItemPosition() - 1));
+                ruleSet.getRule1().setParamComp(nodeInfo.getParamCompID(devs.get(source_device.getSelectedItemPosition() - 1).getNodeType(), initiators.get(initiator.getSelectedItemPosition()), operatorsList.get(operators.getSelectedItemPosition())));
+                ruleSet.getRule1().setRuleMemID(ruleSetStorageManager.getNextFreeRuleMemId(ruleSet.getDev1(), (byte) 0));
+                ruleSet.getRule1().setActionMemID(ruleSet.getAction1().getActionMemID());
+                ruleSet.getRule1().setAppRuleID(ruleSetStorageManager.getNextAppRuleId((byte) 0));
+                ruleSet.getRule1().getToComp().setSourceSAM(nodeInfo.getSamID(devs.get(source_device.getSelectedItemPosition() - 1).getNodeType(), initiators.get(initiator.getSelectedItemPosition())));
+                ruleSet.getRule1().getToComp().setSourceID(nodeInfo.getSourceID(devs.get(source_device.getSelectedItemPosition() - 1).getNodeType(), initiators.get(initiator.getSelectedItemPosition()), initiatorAction.get(initiator_action.getSelectedItemPosition())));
+                ruleSet.getRule1().getToComp().setParams(nodeInfo.getParam(devs.get(source_device.getSelectedItemPosition() - 1).getNodeType(), initiators.get(initiator.getSelectedItemPosition()), (byte) Integer.parseInt(valueIn.getText().toString())));
 
-            ruleSet.getAction1().setActionID(ruleSet.getDev2().getMacId());
-            ruleSet.getAction1().setActionMemID(ruleSetStorageManager.getNextFreeActionMemId(ruleSet.getDev1()));
-            ruleSet.getAction1().setAppActionID(ruleSetStorageManager.getNextAppActionId((byte)0));
-            ruleSet.getAction1().setParam(ruleSet.getAction1().getAppActionID(), 0);
-            ruleSet.getAction1().setParamMask(0);
-            ruleSet.getAction1().setActionSAM((byte) 0x01);
-            ruleSet.getAction2().setActionID(nodeInfo.getActionID((devs.get(target_device.getSelectedItemPosition() - 1)).getNodeType(), actors.get(actor.getSelectedItemPosition()), actorAction.get(actor_action.getSelectedItemPosition())));
-            ruleSet.getAction2().setActionMemID(ruleSetStorageManager.getNextFreeActionMemId(ruleSet.getDev2()));
-            ruleSet.getAction2().setAppActionID(ruleSetStorageManager.getNextAppActionId((byte)(ruleSet.getAction1().getAppActionID() + 1)));
-            ruleSet.getAction2().setParam((byte) Integer.parseInt(valueOut.getText().toString()), 0);
-            ruleSet.getAction2().setParamMask(0);
-            ruleSet.getAction2().setActionSAM(nodeInfo.getSamID(devs.get(target_device.getSelectedItemPosition() - 1).getNodeType(), actors.get(actor.getSelectedItemPosition())));
+            } else {
+                ruleSet.setAction1(new ActionObject());
+                ruleSet.setAction2(new ActionObject());
+                ruleSet.setRule1(new RuleObject());
+                ruleSet.setRule2(new RuleObject());
+                ruleSet.getRule1().setToComp(new SourceObject());
+                ruleSet.getRule2().setToComp(new SourceObject());
 
-            ruleSet.getRule1().setParamComp(nodeInfo.getParamCompID(devs.get(source_device.getSelectedItemPosition() - 1).getNodeType(), initiators.get(initiator.getSelectedItemPosition()), operatorsList.get(operators.getSelectedItemPosition())));
-            ruleSet.getRule1().setRuleMemID(ruleSetStorageManager.getNextFreeRuleMemId(ruleSet.getDev1()));
-            ruleSet.getRule1().setActionMemID(ruleSet.getAction1().getActionMemID());
-            ruleSet.getRule1().setAppRuleID(ruleSetStorageManager.getNextAppRuleId((byte)0));
-            ruleSet.getRule1().getToComp().setSourceSAM(nodeInfo.getSamID(devs.get(source_device.getSelectedItemPosition() - 1).getNodeType(), initiators.get(initiator.getSelectedItemPosition())));
-            ruleSet.getRule1().getToComp().setSourceID(nodeInfo.getSourceID(devs.get(source_device.getSelectedItemPosition() - 1).getNodeType(), initiators.get(initiator.getSelectedItemPosition()), initiatorAction.get(initiator_action.getSelectedItemPosition())));
-            ruleSet.getRule1().getToComp().setParams(nodeInfo.getParam(devs.get(source_device.getSelectedItemPosition() - 1).getNodeType(), initiators.get(initiator.getSelectedItemPosition()),(byte)Integer.parseInt(valueIn.getText().toString())));
+                ruleSet.setDev1(devs.get(source_device.getSelectedItemPosition() - 1));
+                ruleSet.setDev2(devs.get(target_device.getSelectedItemPosition() - 1));
 
-            ruleSet.getRule2().setParamComp((byte) 0x01, 0x00);
-            ruleSet.getRule2().setRuleMemID(ruleSetStorageManager.getNextFreeRuleMemId(ruleSet.getDev2()));
-            ruleSet.getRule2().setActionMemID(ruleSet.getAction2().getActionMemID());
-            ruleSet.getRule2().setAppRuleID(ruleSetStorageManager.getNextAppRuleId((byte)(ruleSet.getRule1().getAppRuleID() + 1)));
-            ruleSet.getRule2().getToComp().setSourceID(ruleSet.getDev1().getMacId());
-            ruleSet.getRule2().getToComp().setSourceSAM((byte) 0x01);
-            ruleSet.getRule2().getToComp().setParam(0, ruleSet.getAction1().getAppActionID());
+                ruleSet.getAction1().setActionID(ruleSet.getDev2().getMacId());
+                ruleSet.getAction1().setActionMemID(ruleSetStorageManager.getNextFreeActionMemId(ruleSet.getDev1(), (byte) 0));
+                ruleSet.getAction1().setAppActionID(ruleSetStorageManager.getNextAppActionId((byte) 0));
+                ruleSet.getAction1().setParam(ruleSet.getAction1().getAppActionID(), 0);
+                ruleSet.getAction1().setParamMask(0);
+                ruleSet.getAction1().setActionSAM((byte) 0x01);
+                ruleSet.getAction2().setActionID(nodeInfo.getActionID((devs.get(target_device.getSelectedItemPosition() - 1)).getNodeType(), actors.get(actor.getSelectedItemPosition()), actorAction.get(actor_action.getSelectedItemPosition())));
+                ruleSet.getAction2().setActionMemID(ruleSetStorageManager.getNextFreeActionMemId(ruleSet.getDev2(), (byte) 0));
+                ruleSet.getAction2().setAppActionID(ruleSetStorageManager.getNextAppActionId((byte) (ruleSet.getAction1().getAppActionID() + 1)));
+                ruleSet.getAction2().setParam((byte) Integer.parseInt(valueOut.getText().toString()), 0);
+                ruleSet.getAction2().setParamMask(0);
+                ruleSet.getAction2().setActionSAM(nodeInfo.getSamID(devs.get(target_device.getSelectedItemPosition() - 1).getNodeType(), actors.get(actor.getSelectedItemPosition())));
+
+                ruleSet.getRule1().setParamComp(nodeInfo.getParamCompID(devs.get(source_device.getSelectedItemPosition() - 1).getNodeType(), initiators.get(initiator.getSelectedItemPosition()), operatorsList.get(operators.getSelectedItemPosition())));
+                ruleSet.getRule1().setRuleMemID(ruleSetStorageManager.getNextFreeRuleMemId(ruleSet.getDev1(), (byte) 0));
+                ruleSet.getRule1().setActionMemID(ruleSet.getAction1().getActionMemID());
+                ruleSet.getRule1().setAppRuleID(ruleSetStorageManager.getNextAppRuleId((byte) 0));
+                ruleSet.getRule1().getToComp().setSourceSAM(nodeInfo.getSamID(devs.get(source_device.getSelectedItemPosition() - 1).getNodeType(), initiators.get(initiator.getSelectedItemPosition())));
+                ruleSet.getRule1().getToComp().setSourceID(nodeInfo.getSourceID(devs.get(source_device.getSelectedItemPosition() - 1).getNodeType(), initiators.get(initiator.getSelectedItemPosition()), initiatorAction.get(initiator_action.getSelectedItemPosition())));
+                ruleSet.getRule1().getToComp().setParams(nodeInfo.getParam(devs.get(source_device.getSelectedItemPosition() - 1).getNodeType(), initiators.get(initiator.getSelectedItemPosition()), (byte) Integer.parseInt(valueIn.getText().toString())));
+
+                ruleSet.getRule2().setParamComp((byte) 0x01, 0x00);
+                ruleSet.getRule2().setRuleMemID(ruleSetStorageManager.getNextFreeRuleMemId(ruleSet.getDev2(), (byte) 0));
+                ruleSet.getRule2().setActionMemID(ruleSet.getAction2().getActionMemID());
+                ruleSet.getRule2().setAppRuleID(ruleSetStorageManager.getNextAppRuleId((byte) (ruleSet.getRule1().getAppRuleID() + 1)));
+                ruleSet.getRule2().getToComp().setSourceID(ruleSet.getDev1().getMacId());
+                ruleSet.getRule2().getToComp().setSourceSAM((byte) 0x01);
+                ruleSet.getRule2().getToComp().setParam(0, ruleSet.getAction1().getAppActionID());
 
 
+            }
+
+            ruleSetStorageManager.insertRuleset(ruleSet);
+
+            this.finish();
         }
-
-        ruleSetStorageManager.insertRuleset(ruleSet);
-
-        this.finish();
 
     }
 

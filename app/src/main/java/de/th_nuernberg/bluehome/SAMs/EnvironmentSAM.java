@@ -97,4 +97,14 @@ public class EnvironmentSAM implements SAM {
     public byte[] getCompareParams(String selection) {
         return new byte[0];
     }
+
+    @Override
+    public int getMaxNum() {
+        return 0;
+    }
+
+    @Override
+    public int getMinNum() {
+        return 0;
+    }
 }

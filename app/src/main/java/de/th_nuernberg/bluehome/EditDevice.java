@@ -119,6 +119,17 @@ public class EditDevice extends AppCompatActivity {
 
         //bleman.programMAC(toEdit, (byte)1, "AB:CD:EF:12:34:56", this);
         //Log.i("StartAct", ""+bleman.writeRule(toEdit, rule));
+        byte[] test = new byte[19];
+        test[0] = (byte)0x01;
+        test[1] = (byte)0x10;
+        ActionObject act = new ActionObject();
+        act.setActionMemID((byte)1);
+        act.setActionSAM((byte)0x0A);
+        act.setActionID((byte)0x01);
+        act.setParamMask(0);
+        act.setParam(test);
+
+        bleman.programAction(toEdit, act, this);
     }
 
     public void writeAction(View view) {

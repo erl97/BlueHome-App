@@ -151,4 +151,14 @@ public class TouchButtonSAM implements SAM {
 
         return param;
     }
+
+    @Override
+    public int getMaxNum() {
+        return 4;
+    }
+
+    @Override
+    public int getMinNum() {
+        return 1;
+    }
 }

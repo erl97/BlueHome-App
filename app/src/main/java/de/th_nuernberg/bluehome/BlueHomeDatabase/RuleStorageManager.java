@@ -155,7 +155,7 @@ public class RuleStorageManager extends DatabaseInitiator {
             }
             if(foundFree)
             {
-                Log.i("RuleStorageManager", "found " + i);
+                Log.i("RuleStorageManager", "found free App id: " + i);
                 return i;
 
             }

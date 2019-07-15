@@ -117,4 +117,10 @@
     <string name="button_number">Knopf Nummer</string>
     <string name="relais">Relais</string>
     <string name="relay_number">Relais Nummer</string>
+    <string name="create_rule">Regel Erstellen</string>
+    <string name="ruleset_name">Regelset Name</string>
+    <string name="threshold_value">Schwellwert</string>
+    <string name="rule_info">Regel Details</string>
+    <string name="rule_info_text_1">Die Regel \"</string>
+    <string name="rule_info_text_2">\" hat folgende Informationen:</string>
 </resources>

@@ -218,10 +218,10 @@ public class RuleSetStorageManager extends DatabaseInitiator {
         return null;
     }
 
-    public byte getNextFreeActionMemId(BlueHomeDevice dev){
+    public byte getNextFreeActionMemId(BlueHomeDevice dev, byte startValue){
         ArrayList<ActionObject> actions = asm.getAllActions();
         boolean foundFree;
-        for(byte i = 0; i < 32; i++)
+        for(byte i = startValue; i < 32; i++)
         {
             foundFree = true;
 
@@ -233,16 +233,18 @@ public class RuleSetStorageManager extends DatabaseInitiator {
                 }
             }
 
-            if(foundFree)
+            if(foundFree) {
+                Log.i("RuleSetStorageManager", "found free action mem id: " + i);
                 return i;
+            }
         }
         return 0;
     }
 
-    public byte getNextFreeRuleMemId(BlueHomeDevice dev){
+    public byte getNextFreeRuleMemId(BlueHomeDevice dev, byte startValue){
         ArrayList<RuleObject> rules = rsm.getAllRules();
         boolean foundFree;
-        for(byte i = 0; i < 32; i++)
+        for(byte i = startValue; i < 32; i++)
         {
             foundFree = true;
 
@@ -255,8 +257,10 @@ public class RuleSetStorageManager extends DatabaseInitiator {
                 }
             }
 
-            if(foundFree)
+            if(foundFree) {
+                Log.i("RuleSetStorageManager", "found free rule mem id: " + i);
                 return i;
+            }
         }
         return 0;
     }
@@ -271,4 +275,26 @@ public class RuleSetStorageManager extends DatabaseInitiator {
         return asm.getNextFreeAppId(startValue);
     }
 
+    public byte getNextFreeRulesetId(){
+        ArrayList<RulesetObject> rulesets = this.getAllRulessets();
+        boolean foundFree;
+        for(byte i = 0; i < 32; i++)
+        {
+            foundFree = true;
+            for (RulesetObject s : rulesets) {
+                if (s.getRulesetID() == i) {
+                    foundFree = false;
+                    break;
+                }
+            }
+            if(foundFree)
+            {
+                Log.i("RuleStorageManager", "found free rule id: " + i);
+                return i;
+
+            }
+
+        }
+        return 0;
+    }
 }

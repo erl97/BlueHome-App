@@ -4,11 +4,11 @@ import android.content.Context;
 
 import java.util.List;
 
-public class DisplaySAM implements SAM {
+public class CurrentSAM implements SAM {
 
     private Context context;
 
-    public DisplaySAM(Context context)
+    public CurrentSAM(Context context)
     {
         this.context = context;
     }
@@ -50,7 +50,7 @@ public class DisplaySAM implements SAM {
 
     @Override
     public byte getSamId() {
-        return 0x04;
+        return 0;
     }
 
     @Override

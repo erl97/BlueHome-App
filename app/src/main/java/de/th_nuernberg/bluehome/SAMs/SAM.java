@@ -22,4 +22,6 @@ public interface SAM {
     public String getInputNumberLabel();
     public String getOutputNumberLabel();
     public byte[] getCompareParams(String selection);
+    public int getMaxNum();
+    public int getMinNum();
 }

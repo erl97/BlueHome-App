@@ -64,6 +64,24 @@ public class BLEDataExchangeManager extends Application {
         addToBuffer(new BLEBufferElement(dev, tmpData, BLEService.UUID_DIRECT_OPTIONS, BLEService.UUID_DIRECT_SERV, "WRITE_FAIL"), con);
     }
 
+    public void clearRules(BlueHomeDevice dev, Context con)
+    {
+        byte[] tmp = new byte[]{9, 4};
+        addToBuffer(new BLEBufferElement(dev, tmp, BLEService.UUID_DIRECT_OPTIONS, BLEService.UUID_DIRECT_SERV, "WRITE_FAIL"), con);
+    }
+
+    public void clearActions(BlueHomeDevice dev, Context con)
+    {
+        byte[] tmp = new byte[]{9, 5};
+        addToBuffer(new BLEBufferElement(dev, tmp, BLEService.UUID_DIRECT_OPTIONS, BLEService.UUID_DIRECT_SERV, "WRITE_FAIL"), con);
+    }
+
+    public void clearMACs(BlueHomeDevice dev, Context con)
+    {
+        byte[] tmp = new byte[]{9, 6};
+        addToBuffer(new BLEBufferElement(dev, tmp, BLEService.UUID_DIRECT_OPTIONS, BLEService.UUID_DIRECT_SERV, "WRITE_FAIL"), con);
+    }
+
     public void programMAC(BlueHomeDevice dev, byte macID, String mac, Context con){
         String[] macParts = mac.split(":");
 

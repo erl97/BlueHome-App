@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,7 +95,17 @@ public class BLEService extends Service {
             Log.e(DEBUG_TAG, "toBuffer Null Pointer");
             stopSelf();
         } else {
-            buffer.add(toBuffer);
+            if(buffer.size() > 1) {
+                int i = 1;
+                for (i = 1; i < buffer.size(); i++) {
+                    if (buffer.get(i - 1).getDev().equals(toBuffer.getDev()) && !buffer.get(i).getDev().equals(toBuffer.getDev())) {
+                        break;
+                    }
+                }
+                buffer.add(i, toBuffer);
+            }
+            else
+                buffer.add(toBuffer);
             Log.i(DEBUG_TAG, "added " + toBuffer.getDev().getMacAddress() + " to Buffer");
         }
         kickOffAction();
@@ -148,7 +159,13 @@ public class BLEService extends Service {
 
     protected void notifyErrorChanged(){
         Intent in = new Intent(ERROR_FOUND_BC);
-        sendBroadcast(in);
+        while (errorBuffer.size() > 0)
+        {
+            in.putExtra(TAG_MAC, errorBuffer.get(0).getDevice().getMacAddress());
+            sendBroadcast(in);
+            errorBuffer.remove(0);
+        }
+
     }
 
     protected void connectionFailed(BluetoothGatt gatt, int source){
@@ -157,11 +174,15 @@ public class BLEService extends Service {
         ErrorObject tmp = new ErrorObject(ErrorObject.ERROR_NOT_AVAILABLE, actDev);
         errorBuffer.add(tmp);
         notifyErrorChanged();
+        while(buffer.get(0).getDev().getMacAddress().equals(actDev.getMacAddress())) {
+            Log.e(DEBUG_TAG, "Removing " + buffer.get(0).getDev().getMacAddress() + " from buffer due to connection error");
+            buffer.remove(0);
+        }
         disconnected();
     }
 
     protected void disconnected(){
-        buffer.remove(0);
+        //buffer.remove(0);
         actDev = null;
         Log.i(DEBUG_TAG, "Disconnection Completed");
         runNext();
@@ -171,10 +192,16 @@ public class BLEService extends Service {
         if(buffer.isEmpty()){
             RUNNING = false;
             Log.i(DEBUG_TAG,"Nothing to Do, stopping");
+            notifyComplete();
             stopSelf();
         } else {
             openConnetionTo(buffer.get(0).getDev());
         }
+    }
+
+    private void notifyComplete()
+    {
+
     }
 
     private void notifyFailed(BluetoothGatt gatt, int source){
@@ -203,12 +230,14 @@ public class BLEService extends Service {
                     Log.i(DEBUG_TAG, "Start scan");
                     break;
                 case BluetoothProfile.STATE_DISCONNECTED:  //Connection Lost
-                    Log.i(DEBUG_TAG, "Connection failed/ended!");
+                    //Log.i(DEBUG_TAG, "Connection failed/ended!");
                     if(status == 0 || status == 19) //normal disconnect
                         disconnected();
-                    else
+                    else {
                         //retryConnection();
+                        Log.e(DEBUG_TAG, "Connection failed");
                         connectionFailed(gatt, ErrorObject.ERROR_NOT_AVAILABLE);
+                    }
                     break;
                 default:
                     Log.e(DEBUG_TAG, "STATE_OTHER");
@@ -266,10 +295,19 @@ public class BLEService extends Service {
                     if(buffer.size() > 1){
                         if(buffer.get(1).getDev().equals(actDev)){
                             buffer.remove(0);
+                            Log.i(DEBUG_TAG,"removed Packet from Buffer");
                             gatt.discoverServices();
                         }
-                    } else
+                        else {
+                            gatt.disconnect();
+                            Log.i(DEBUG_TAG, "Next device is different, disconnecting...");
+                            buffer.remove(0);
+                        }
+                    } else {
+                        Log.i(DEBUG_TAG, "buffer not >1. Buffer size: " + buffer.size());
                         gatt.disconnect();
+                        buffer.remove(0);
+                    }
                 }
 
 
@@ -303,10 +341,31 @@ public class BLEService extends Service {
             if(buffer.size() > 1){
                 if(buffer.get(1).getDev().equals(actDev)){
                     buffer.remove(0);
+                    Log.i(DEBUG_TAG,"removed Packet from Buffer");
                     gatt.discoverServices();
                 }
-            } else
+                else {
+                    gatt.disconnect();
+                    Log.i(DEBUG_TAG, "Next device is different, disconnecting...");
+                    buffer.remove(0);
+                }
+            } else {
+                Log.i(DEBUG_TAG, "buffer not >1. Buffer size: " + buffer.size());
                 gatt.disconnect();
+                buffer.remove(0);
+            }
+
+
+
+            /*if(buffer.size() > 1){
+                if(buffer.get(1).getDev().equals(actDev)){
+                    buffer.remove(0);
+                    gatt.discoverServices();
+                }
+            } else {
+                Log.i(DEBUG_TAG, "Disconnecting gatt...");
+                gatt.disconnect();
+            }*/
         }
     };
 }

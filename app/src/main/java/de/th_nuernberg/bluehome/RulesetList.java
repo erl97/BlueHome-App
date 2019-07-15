@@ -1,13 +1,23 @@
 package de.th_nuernberg.bluehome;
 
+import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -17,11 +27,13 @@ import java.util.ArrayList;
 import de.th_nuernberg.bluehome.Adapters.DeviceListAdapter;
 import de.th_nuernberg.bluehome.Adapters.RuleSetListAdapter;
 import de.th_nuernberg.bluehome.BLEManagement.BLEDataExchangeManager;
+import de.th_nuernberg.bluehome.BLEManagement.BLEService;
 import de.th_nuernberg.bluehome.BlueHomeDatabase.ActionStorageManager;
 import de.th_nuernberg.bluehome.BlueHomeDatabase.BlueHomeDeviceStorageManager;
 import de.th_nuernberg.bluehome.BlueHomeDatabase.RuleSetStorageManager;
 import de.th_nuernberg.bluehome.BlueHomeDatabase.RuleStorageManager;
 import de.th_nuernberg.bluehome.RuleProcessObjects.ActionObject;
+import de.th_nuernberg.bluehome.RuleProcessObjects.NodeInfo;
 import de.th_nuernberg.bluehome.RuleProcessObjects.RuleObject;
 import de.th_nuernberg.bluehome.RuleProcessObjects.RulesetObject;
 
@@ -40,8 +52,15 @@ public class RulesetList extends AppCompatActivity {
     private ActionStorageManager asm = new ActionStorageManager(this);
     private BLEDataExchangeManager bleman = new BLEDataExchangeManager();
     private BlueHomeDeviceStorageManager bhsm = new BlueHomeDeviceStorageManager(this);
+    private NodeInfo nodeInfo = new NodeInfo(this);
     private RuleSetListAdapter list_adapter;
-    private RulesetObject testObject;
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.i("EditDevice", "Received Broadcast");
+            Toast.makeText(context,"Failed to Connect to " + intent.getStringExtra(BLEService.TAG_MAC), Toast.LENGTH_SHORT).show();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,15 +70,6 @@ public class RulesetList extends AppCompatActivity {
         setContentView(R.layout.activity_ruleset_list);
 
         rulesets = new ArrayList<>();
-
-        testObject = new RulesetObject();
-        testObject.setName("Test Set");
-        testObject.setDev1(new BlueHomeDevice("AB:CD:EF:GH:IJ:KL", "Dev 1"));
-        testObject.setDev2(new BlueHomeDevice("12:34:56:78:90:XY", "Dev 2"));
-        testObject.getDev1().setImgID(R.drawable.bluehome_node_1);
-        testObject.getDev2().setImgID(R.drawable.bluehome_node_2);
-        testObject.getDev1().setShownName("Device 1");
-        testObject.getDev2().setShownName("Device 2");
 
         //get Views
         deleteButton = (FloatingActionButton) findViewById(R.id.ruleset_list_delete);
@@ -74,14 +84,15 @@ public class RulesetList extends AppCompatActivity {
               list.setAdapter(list_adapter);
 
 
-        /*list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent i = new Intent(RulesetList.this, EditRuleset.class);
+                showRulsetInfo(rulesets.get(position));
+                /*Intent i = new Intent(RulesetList.this, EditRuleset.class);
                 i.putExtra("rulesetID", rulesets.get(position).getRulesetID());
-                startActivity(i);
+                startActivity(i);*/
             }
-        });*/
+        });
 
         downloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,6 +148,19 @@ public class RulesetList extends AppCompatActivity {
                 startActivity(i);
             }
         });
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                new IntentFilter("WRITE_FAIL"));
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        if(item.getItemId() == android.R.id.home)
+        {
+            onBackPressed();
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -149,10 +173,63 @@ public class RulesetList extends AppCompatActivity {
         list.deferNotifyDataSetChanged();
     }
 
+    protected void onStop() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+        super.onStop();
+    }
+
+    private void showRulsetInfo(RulesetObject rule)
+    {
+        AlertDialog alertDialog = new AlertDialog.Builder(this, R.style.AlertDialogStyle).create();
+
+        alertDialog.setTitle(getResources().getString(R.string.rule_info));
+
+        StringBuilder message = new StringBuilder();
+        message.append(getResources().getString(R.string.rule_info_text_1) + rule.getName() + getResources().getString(R.string.rule_info_text_2) + '\n');
+        message.append(getResources().getString(R.string.source_device) + ": " + rule.getDev1().getShownName() + " (" + rule.getDev1().getMacAddress() + ")\n");
+        if(rule.getDev2() != null)
+            message.append(getResources().getString(R.string.target_device) + ": " + rule.getDev2().getShownName() + " (" + rule.getDev2().getMacAddress() + ")\n");
+        else
+            message.append(getResources().getString(R.string.target_device) + ": " + rule.getDev1().getShownName() + " (" + rule.getDev1().getMacAddress() + ")\n");
+
+        message.append(getResources().getString(R.string.initiator) + ": " + nodeInfo.getSAMname(rule.getRule1().getToComp().getSourceSAM()) + "\n");
+        if(rule.getDev2() != null)
+            message.append(getResources().getString(R.string.actor) + ": " + nodeInfo.getSAMname(rule.getAction2().getActionSAM()) + "\n");
+        else
+            message.append(getResources().getString(R.string.actor) + ": " + nodeInfo.getSAMname(rule.getAction1().getActionSAM()) + "\n");
+
+        alertDialog.setMessage(message);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        lp.leftMargin = 50;
+        lp.rightMargin= 50;
+
+
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        new Dialog(getApplicationContext());
+        alertDialog.show();
+    }
+
+
     private void writeAll()
     {
         if(storageManager.getAllRulessets().size() > 0)
         {
+            ArrayList<BlueHomeDevice> devs = bhsm.getAllDevices();
+
+            for(BlueHomeDevice dev : devs)
+            {
+                bleman.clearActions(dev, this);
+                bleman.clearRules(dev, this);
+                bleman.clearMACs(dev, this);
+            }
+
             ArrayList<RuleObject> rules = rsm.getAllRules();
             ArrayList<ActionObject> actions = asm.getAllActions();
             ArrayList<BlueHomeDevice> toUpdate = new ArrayList<>();
@@ -169,7 +246,7 @@ public class RulesetList extends AppCompatActivity {
                     toUpdate.add(storageManager.getDevForAction(ao));
             }
 
-            ArrayList<BlueHomeDevice> devs = bhsm.getAllDevices();
+
 
             for(BlueHomeDevice dev : toUpdate) {
                 for (BlueHomeDevice d : devs)
