@@ -1,6 +1,7 @@
 package de.th_nuernberg.bluehome.SAMs;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,10 +73,16 @@ public class LightSAM implements SAM {
 
     @Override
     public byte[] getSourceParams(byte toCompare) {
+        Log.i("LightSAM", "got " + toCompare);
         byte[] tmp = new byte[19];
+        for(int i = 0; i < 19; i++) {
+            tmp[i] = 0;
+        }
         long value = toCompare * 255;
         tmp[0] = (byte) (0x000000FF & value);
         tmp[1] = (byte) (0x000000FF & ( value >> 8));
+        Log.i("LightSAM", "" + tmp[0]);
+
 
         return tmp;
     }

@@ -48,13 +48,13 @@ public class DatabaseInitiator extends SQLiteOpenHelper {
                         DBConstants.RULES_COLUMN_RULE_MEM_ID +
                         " integer," +
                         DBConstants.RULES_COLUMN_PARAM_COMP +
-                        " text," +
+                        " blob," +
                         DBConstants.RULES_COLUMN_SOURCE_ID +
                         " integer," +
                         DBConstants.RULES_COLUMN_SOURCE_SAM +
                         " integer," +
                         DBConstants.RULES_COLUMN_SOURCE_PARAM +
-                        " text)"
+                        " blob)"
         );
 
         db.execSQL(
@@ -88,7 +88,7 @@ public class DatabaseInitiator extends SQLiteOpenHelper {
                         DBConstants.ACTIONS_COLUMN_PARAM_MASK +
                         " integer," +
                         DBConstants.ACTIONS_COLUMN_PARAMS +
-                        " text," +
+                        " blob," +
                         DBConstants.ACTIONS_COLUMN_SAM +
                         " integer)"
         );

@@ -15,6 +15,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -174,7 +175,7 @@ public class BLEService extends Service {
         ErrorObject tmp = new ErrorObject(ErrorObject.ERROR_NOT_AVAILABLE, actDev);
         errorBuffer.add(tmp);
         notifyErrorChanged();
-        while(buffer.get(0).getDev().getMacAddress().equals(actDev.getMacAddress())) {
+        while(!buffer.isEmpty() && buffer.get(0).getDev().getMacAddress().equals(actDev.getMacAddress())) {
             Log.e(DEBUG_TAG, "Removing " + buffer.get(0).getDev().getMacAddress() + " from buffer due to connection error");
             buffer.remove(0);
         }
@@ -196,6 +197,7 @@ public class BLEService extends Service {
             stopSelf();
         } else {
             openConnetionTo(buffer.get(0).getDev());
+
         }
     }
 
@@ -343,6 +345,11 @@ public class BLEService extends Service {
                     buffer.remove(0);
                     Log.i(DEBUG_TAG,"removed Packet from Buffer");
                     gatt.discoverServices();
+
+                        Log.i("BLEService", "Writing" + " to " + buffer.get(0).getCharUuid() + " to " + buffer.get(0).getDev().getMacAddress());
+                        for(int i = 0; i < buffer.get(0).getData().length; i++)
+                            Log.i("BLEService", "Data Byte " + i + ": " + buffer.get(0).getData()[i]);
+
                 }
                 else {
                     gatt.disconnect();

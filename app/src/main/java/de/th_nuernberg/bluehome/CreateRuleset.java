@@ -297,6 +297,8 @@ public class CreateRuleset extends AppCompatActivity {
                 ruleSet.getRule1().getToComp().setSourceID(nodeInfo.getSourceID(devs.get(source_device.getSelectedItemPosition() - 1).getNodeType(), initiators.get(initiator.getSelectedItemPosition()), initiatorAction.get(initiator_action.getSelectedItemPosition())));
                 ruleSet.getRule1().getToComp().setParams(nodeInfo.getParam(devs.get(source_device.getSelectedItemPosition() - 1).getNodeType(), initiators.get(initiator.getSelectedItemPosition()), (byte) Integer.parseInt(valueIn.getText().toString())));
 
+                Log.i("CreateRuleset", "" + ruleSet.getRule1().getToComp().getParam(0));
+
                 ruleSet.getRule2().setParamComp((byte) 0x01, 0x00);
                 ruleSet.getRule2().setRuleMemID(ruleSetStorageManager.getNextFreeRuleMemId(ruleSet.getDev2(), (byte) 0));
                 ruleSet.getRule2().setActionMemID(ruleSet.getAction2().getActionMemID());

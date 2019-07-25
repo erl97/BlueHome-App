@@ -7,7 +7,7 @@ package de.th_nuernberg.bluehome.BlueHomeDatabase;
  */
 
 public class DBConstants {
-    public static final String DATABASE_NAME                    = "BlueHomeDatesNew.db";
+    public static final String DATABASE_NAME                    = "BlueHomeDatesFinal.db";
     public static final String DEVICES_TABLE_NAME               = "devices";
     public static final String DEVICES_COLUMN_SHOWN_NAME        = "shown_name";
     public static final String DEVICES_COLUMN_REAL_NAME         = "real_name";

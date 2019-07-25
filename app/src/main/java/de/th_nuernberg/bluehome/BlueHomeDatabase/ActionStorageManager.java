@@ -28,7 +28,7 @@ public class ActionStorageManager extends DatabaseInitiator {
         contentValues.put(DBConstants.ACTIONS_COLUMN_ID, action.getActionID());
         contentValues.put(DBConstants.ACTIONS_COLUMN_MEM_ID, action.getActionMemID());
         contentValues.put(DBConstants.ACTIONS_COLUMN_PARAM_MASK, action.getParamMask());
-        contentValues.put(DBConstants.ACTIONS_COLUMN_PARAMS, new String(action.getParam(), Charset.forName("UTF-8")));
+        contentValues.put(DBConstants.ACTIONS_COLUMN_PARAMS, action.getParam());
         contentValues.put(DBConstants.ACTIONS_COLUMN_SAM, action.getActionSAM());
         db.insert(DBConstants.ACTIONS_TABLE_NAME, null, contentValues);
     }
@@ -48,7 +48,7 @@ public class ActionStorageManager extends DatabaseInitiator {
             tmp.setActionID((byte)res.getInt(res.getColumnIndex(DBConstants.ACTIONS_COLUMN_ID)));
             tmp.setActionMemID((byte)res.getInt(res.getColumnIndex(DBConstants.ACTIONS_COLUMN_MEM_ID)));
             tmp.setParamMask(res.getInt(res.getColumnIndex(DBConstants.ACTIONS_COLUMN_PARAM_MASK)));
-            tmp.setParam((res.getString(res.getColumnIndex(DBConstants.ACTIONS_COLUMN_PARAMS))).getBytes(Charset.forName("UTF-8")));
+            tmp.setParam((res.getBlob(res.getColumnIndex(DBConstants.ACTIONS_COLUMN_PARAMS))));
             tmp.setActionSAM((byte)res.getInt(res.getColumnIndex(DBConstants.ACTIONS_COLUMN_SAM)));
             return tmp;
         } else {
@@ -57,13 +57,6 @@ public class ActionStorageManager extends DatabaseInitiator {
         }
     }
 
-    private byte[] toByteArray(String data){
-        return data.getBytes();
-    }
-
-    private String byteArrayToString(byte[] data) {
-        return data.toString();
-    }
 
     /**
      * Overwrites/Updates Action
@@ -77,7 +70,7 @@ public class ActionStorageManager extends DatabaseInitiator {
         contentValues.put(DBConstants.ACTIONS_COLUMN_ID, action.getActionID());
         contentValues.put(DBConstants.ACTIONS_COLUMN_MEM_ID, action.getActionMemID());
         contentValues.put(DBConstants.ACTIONS_COLUMN_PARAM_MASK, action.getParamMask());
-        contentValues.put(DBConstants.ACTIONS_COLUMN_PARAMS, new String(action.getParam(), Charset.forName("UTF-8")));
+        contentValues.put(DBConstants.ACTIONS_COLUMN_PARAMS, action.getParam());
         contentValues.put(DBConstants.ACTIONS_COLUMN_SAM, action.getActionSAM());
 
         db.update(DBConstants.ACTIONS_TABLE_NAME, contentValues, DBConstants.ACTIONS_COLUMN_APP_ACTION_ID + " = ? ", new String[] { "" + action.getAppActionID() } );
@@ -113,7 +106,7 @@ public class ActionStorageManager extends DatabaseInitiator {
             tmp.setActionID((byte)res.getInt(res.getColumnIndex(DBConstants.ACTIONS_COLUMN_ID)));
             tmp.setActionMemID((byte)res.getInt(res.getColumnIndex(DBConstants.ACTIONS_COLUMN_MEM_ID)));
             tmp.setActionSAM((byte)(res.getInt(res.getColumnIndex(DBConstants.ACTIONS_COLUMN_SAM))));
-            tmp.setParam((res.getString(res.getColumnIndex(DBConstants.ACTIONS_COLUMN_PARAMS))).getBytes(Charset.forName("UTF-8")));
+            tmp.setParam((res.getBlob(res.getColumnIndex(DBConstants.ACTIONS_COLUMN_PARAMS))));
             tmp.setParamMask(res.getInt(res.getColumnIndex(DBConstants.ACTIONS_COLUMN_PARAM_MASK)));
             array_list.add(tmp);
             res.moveToNext();

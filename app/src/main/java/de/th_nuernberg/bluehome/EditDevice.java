@@ -48,6 +48,8 @@ public class EditDevice extends AppCompatActivity {
     private BlueHomeDeviceStorageManager db = new BlueHomeDeviceStorageManager(this);
     private BLEDataExchangeManager bleman = new BLEDataExchangeManager();
 
+    private Button runAction;
+
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -67,6 +69,8 @@ public class EditDevice extends AppCompatActivity {
         macAddressView = (TextView)findViewById(R.id.edit_device_mac);
         imgSpinnerView = (Spinner)findViewById(R.id.edit_device_img_spinner);
         submitButton = (Button)findViewById(R.id.edit_device_submit_button);
+        runAction = (Button)findViewById(R.id.button2);
+
 
         spinnerImages = new Integer[]{R.drawable.bluehome_node, R.drawable.bluehome_node_1, R.drawable.bluehome_node_2, R.drawable.bluehome_node_3, R.drawable.bluehome_node_4};
 
@@ -77,6 +81,25 @@ public class EditDevice extends AppCompatActivity {
         shownNameView.setText(toEdit.getShownName());
         realNameView.setText(toEdit.getDeviceName());
         macAddressView.setText(toEdit.getMacAddress());
+
+        switch (toEdit.getNodeType())
+        {
+            case 1:
+                runAction.setText(getResources().getString(R.string.comp_lbl_gpo));
+                break;
+
+            case 2:
+                runAction.setText(getResources().getString(R.string.relay_1) + " " + getResources().getString(R.string.toggle));
+                break;
+
+            case 3:
+                runAction.setText(getResources().getString(R.string.buzzer) + " " + getResources().getString(R.string.short_beep));
+                break;
+
+                default:
+                    runAction.setText("ACTION");
+                    break;
+        }
 
         ImageSpinnerAdapter adapter = new ImageSpinnerAdapter(getApplicationContext(), R.layout.image_spinner_layout, spinnerImages);
         imgSpinnerView.setAdapter(adapter);
@@ -104,46 +127,51 @@ public class EditDevice extends AppCompatActivity {
         super.onStop();
     }
 
-    public void writeRule(View view){
-        RuleObject rule = new RuleObject();
-        rule.setRuleMemID((byte)0x01);
-        rule.setActionMemID((byte)0x01);
-        rule.setParamComp((byte)0x02, 0);
-        rule.setToComp(new SourceObject());
-        rule.getToComp().setParam(0,(byte)0);
-        rule.getToComp().setSourceSAM((byte)0x05);
-        rule.getToComp().setSourceID((byte)0x04);
-
-
-        bleman.programRule(toEdit, rule, this);
-
-        //bleman.programMAC(toEdit, (byte)1, "AB:CD:EF:12:34:56", this);
-        //Log.i("StartAct", ""+bleman.writeRule(toEdit, rule));
-        byte[] test = new byte[19];
-        test[0] = (byte)0x01;
-        test[1] = (byte)0x10;
-        ActionObject act = new ActionObject();
-        act.setActionMemID((byte)1);
-        act.setActionSAM((byte)0x0A);
-        act.setActionID((byte)0x01);
-        act.setParamMask(0);
-        act.setParam(test);
-
-        bleman.programAction(toEdit, act, this);
-    }
 
     public void writeAction(View view) {
         byte[] test = new byte[19];
-        test[0] = (byte)0x01;
-        test[1] = (byte)0x10;
-        ActionObject act = new ActionObject();
-        act.setActionMemID((byte)1);
-        act.setActionSAM((byte)0x0A);
-        act.setActionID((byte)0x01);
-        act.setParamMask(0);
-        act.setParam(test);
+        for(int i = 0; i < 19; i++)
+            test[i] = 0;
+        ActionObject act = null;
+        switch (toEdit.getNodeType())
+        {
+            case 1:
+                act = new ActionObject();
+                act.setActionMemID((byte)0);
+                act.setActionSAM((byte)0x08);
+                act.setParamMask(0x00);
+                test[0] = 1;
+                act.setParam(test);
+                act.setActionID((byte)0x01);
 
-        bleman.programAction(toEdit, act, this);
+
+                break;
+
+            case 2:
+                act = new ActionObject();
+                act.setActionMemID((byte)0);
+                act.setActionSAM((byte)0x07);
+                act.setParamMask(0x00);
+                act.setParam(test);
+                act.setActionID((byte)0x01);
+
+                break;
+
+            case 3:
+
+                act = new ActionObject();
+                act.setActionMemID((byte)0);
+                act.setActionSAM((byte)0x0A);
+                act.setParamMask(0x00);
+                test[0] = 20;
+                act.setParam(test);
+                act.setActionID((byte)0x01);
+
+                break;
+        }
+
+        if(act != null)
+            bleman.runAction(toEdit, act, this);
 
     }
 

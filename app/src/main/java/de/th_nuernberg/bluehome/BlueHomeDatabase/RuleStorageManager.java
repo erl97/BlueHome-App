@@ -24,7 +24,7 @@ public class RuleStorageManager extends DatabaseInitiator {
 
     public void insertRule(RuleObject rule) {
 
-            Log.i("StorageManager", "" + new String(rule.getParamComp(), Charset.forName("UTF-8")).getBytes(Charset.forName("UTF-8"))[0] + " " + rule.getParamComp()[0]);
+            //Log.i("StorageManager", "" + new String(rule.getParamComp(), Charset.forName("UTF-8")).getBytes(Charset.forName("UTF-8"))[0] + " " + rule.getParamComp()[0]);
 
 
             SQLiteDatabase db = this.getWritableDatabase();
@@ -37,8 +37,11 @@ public class RuleStorageManager extends DatabaseInitiator {
 
             Log.i("RuleStorageManager", "source sam: " + rule.getToComp().getSourceSAM());
 
-            contentValues.put(DBConstants.RULES_COLUMN_PARAM_COMP, new String(rule.getParamComp(), Charset.forName("UTF-8")));
-            contentValues.put(DBConstants.RULES_COLUMN_SOURCE_PARAM, new String(rule.getToComp().getParams(), Charset.forName("UTF-8")));
+            contentValues.put(DBConstants.RULES_COLUMN_PARAM_COMP, rule.getParamComp());
+            contentValues.put(DBConstants.RULES_COLUMN_SOURCE_PARAM, rule.getToComp().getParams());
+
+            for(int i = 0; i < rule.getToComp().getParams().length; i++)
+                Log.i("RuleStorageManager", "Writing param " + i + ": " + rule.getToComp().getParams()[i]);
             db.insert(DBConstants.RULES_TABLE_NAME, null, contentValues);
     }
 
@@ -60,9 +63,12 @@ public class RuleStorageManager extends DatabaseInitiator {
             tmp.setRuleMemID((byte)res.getInt(res.getColumnIndex(DBConstants.RULES_COLUMN_RULE_MEM_ID)));
             tmpSource.setSourceID((byte)res.getInt(res.getColumnIndex(DBConstants.RULES_COLUMN_SOURCE_ID)));
             tmpSource.setSourceSAM((byte)res.getInt(res.getColumnIndex(DBConstants.RULES_COLUMN_SOURCE_SAM)));
-            tmpSource.setParams((res.getString(res.getColumnIndex(DBConstants.RULES_COLUMN_SOURCE_PARAM))).getBytes(Charset.forName("UTF-8")));
+            tmpSource.setParams((res.getBlob(res.getColumnIndex(DBConstants.RULES_COLUMN_SOURCE_PARAM))));
             tmp.setToComp(tmpSource);
-            tmp.setParamComp((res.getString(res.getColumnIndex(DBConstants.RULES_COLUMN_PARAM_COMP))).getBytes(Charset.forName("UTF-8")));
+            tmp.setParamComp((res.getBlob(res.getColumnIndex(DBConstants.RULES_COLUMN_PARAM_COMP))));
+            Log.i("RuleStorageManager", "Rule Param for Rule ID " + tmp.getAppRuleID() + ":");
+            for(int i = 0; i < tmp.getToComp().getParams().length; i++)
+                Log.i("RuleStorageManager", "data byte " + i + ": " + tmp.getToComp().getParams()[i]);
             return tmp;
         } else {
             Log.e("RuleStorageManager", "didn't move");
@@ -92,8 +98,8 @@ public class RuleStorageManager extends DatabaseInitiator {
         contentValues.put(DBConstants.RULES_COLUMN_SOURCE_ID, rule.getToComp().getSourceID());
         contentValues.put(DBConstants.RULES_COLUMN_SOURCE_SAM, rule.getToComp().getSourceSAM());
 
-        contentValues.put(DBConstants.RULES_COLUMN_PARAM_COMP, new String(rule.getParamComp(), Charset.forName("UTF-8")));
-        contentValues.put(DBConstants.RULES_COLUMN_SOURCE_PARAM, new String(rule.getToComp().getParams(), Charset.forName("UTF-8")));
+        contentValues.put(DBConstants.RULES_COLUMN_PARAM_COMP, rule.getParamComp());
+        contentValues.put(DBConstants.RULES_COLUMN_SOURCE_PARAM, rule.getToComp().getParams());
 
         db.update(DBConstants.RULES_TABLE_NAME, contentValues, DBConstants.RULES_COLUMN_APP_RULE_ID + " = ? ", new String[] { "" + rule.getAppRuleID() } );
         return true;
@@ -131,9 +137,9 @@ public class RuleStorageManager extends DatabaseInitiator {
             tmp.setRuleMemID((byte)res.getInt(res.getColumnIndex(DBConstants.RULES_COLUMN_RULE_MEM_ID)));
             tmpSource.setSourceID((byte)res.getInt(res.getColumnIndex(DBConstants.RULES_COLUMN_SOURCE_ID)));
             tmpSource.setSourceSAM((byte)res.getInt(res.getColumnIndex(DBConstants.RULES_COLUMN_SOURCE_SAM)));
-            tmpSource.setParams((res.getString(res.getColumnIndex(DBConstants.RULES_COLUMN_SOURCE_PARAM))).getBytes(Charset.forName("UTF-8")));
+            tmpSource.setParams((res.getBlob(res.getColumnIndex(DBConstants.RULES_COLUMN_SOURCE_PARAM))));
             tmp.setToComp(tmpSource);
-            tmp.setParamComp((res.getString(res.getColumnIndex(DBConstants.RULES_COLUMN_PARAM_COMP))).getBytes(Charset.forName("UTF-8")));
+            tmp.setParamComp((res.getBlob(res.getColumnIndex(DBConstants.RULES_COLUMN_PARAM_COMP))));
             array_list.add(tmp);
             res.moveToNext();
         }
