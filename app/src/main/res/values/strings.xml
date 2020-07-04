@@ -122,4 +122,17 @@
     <string name="rule_info">Rule Details</string>
     <string name="rule_info_text_1">Rule \"</string>
     <string name="rule_info_text_2">\" has following Details:</string>
+    <string name="newRuleSetName">1/5\nPlease name your new ruleset</string>
+    <string name="rulesetName">Name of ruleset</string>
+    <string name="newRuleSet">NewRuleSet</string>
+    <string name="nextAction">continue</string>
+    <string name="newRuleSetDevices">2/5\nChose the source and target device that should be used for the new ruleset</string>
+    <string name="sourceDevice">source device</string>
+    <string name="destinationDevice">destination device</string>
+    <string name="newRuleSetInitiatorActor">3/5\nChose the initiator of the the source device that will trigger the event and the actor of the target device that will react to this event</string>
+    <string name="wrongDevice">The chosen devices are not correct. Please check if both, the source and the target device are valid devices!</string>
+    <string name="newRuleSetInitiatorAction">4/5\nChose the action of the initiator and the comparism of it that triggers the event</string>
+    <string name="newRuleSetActorAction">5/5\nChose the action of the actor and the value/intensity of the action</string>
+    <string name="finish">Finish</string>
+    <string name="newRuleSetNotWithinBorders">The given parameter to compare with is not within the allowed range of the device</string>
 </resources>

@@ -86,9 +86,9 @@ public class GpioSAM implements SAM {
 
     @Override
     public byte getSourceID(String initiatorAction) {
-        if(initiatorAction.equals(Resources.getSystem().getString(R.string.falling_edge)))
+        if(initiatorAction.equals(context.getResources().getString(R.string.falling_edge)))
             return 0x02;
-        if(initiatorAction.equals(Resources.getSystem().getString(R.string.rising_edge)))
+        if(initiatorAction.equals(context.getResources().getString(R.string.rising_edge)))
             return 0x01;
         return 0;
     }

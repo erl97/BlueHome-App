@@ -14,14 +14,33 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CreateRuleset"></activity>
+        <activity
+            android:name=".WizardChoseRulesetActorAction"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".WizardChoseRulesetInitiatorAction"
+            android:screenOrientation="portrait" />
+        <activity android:name=".WizardChoseRulesetInitiatorActor"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".WizardChoseRulesetSource"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".WizardCreateNewRuleSet"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".WizardChoseRuleSetName"
+            android:screenOrientation="portrait" />
+        <activity android:name=".SAMs.ChoseRulesetName"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".SAMs.ChoseSourceDevice"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".CreateRuleset"
+            android:screenOrientation="portrait"/>
 
         <service
             android:name=".BLEManagement.BLEService"
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".StartActivity" />
+        <activity android:name=".StartActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".SplashScreen"
             android:theme="@style/AppTheme.Launcher">
@@ -31,13 +50,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DeviceList" />
-        <activity android:name=".ManAddDev" />
-        <activity android:name=".EditDevice" />
-        <activity android:name=".AppSettings" />
-        <activity android:name=".ExportData" />
-        <activity android:name=".FindNewDevice" />
-        <activity android:name=".RulesetList" />
+        <activity android:name=".DeviceList"
+            android:screenOrientation="portrait" />
+        <activity android:name=".ManAddDev"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".EditDevice"
+            android:screenOrientation="portrait" />
+        <activity android:name=".AppSettings"
+            android:screenOrientation="portrait" />
+        <activity android:name=".ExportData"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".FindNewDevice"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".RulesetList"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

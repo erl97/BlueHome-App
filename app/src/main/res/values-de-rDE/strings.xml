@@ -123,4 +123,17 @@
     <string name="rule_info">Regel Details</string>
     <string name="rule_info_text_1">Die Regel \"</string>
     <string name="rule_info_text_2">\" hat folgende Informationen:</string>
+    <string name="newRuleSetName">1/5\nBitte benennen Sie das neue Regelset</string>
+    <string name="rulesetName">Name des Rulesets</string>
+    <string name="newRuleSet">NeuesRuleset</string>
+    <string name="nextAction">Weiter</string>
+    <string name="newRuleSetDevices">2/5\nWählen Sie das Quell- und das Zielgerät, die für das neue Ruleset verwendet werden sollen</string>
+    <string name="sourceDevice">Quellgerät</string>
+    <string name="destinationDevice">Zielgerät</string>
+    <string name="newRuleSetInitiatorActor">3/5\nWählen Sie den Initiator des Quellgeräts, der das Event auslösen wird und den Aktor des Zielgeräts, der auf das Event reagieren wird</string>
+    <string name="wrongDevice">Die gewählten Geräte sind fehlerhaft. Bitte überprüfen Sie, ob sowohl das Quellgerät als auch das Zielgerät gewählt sind.</string>
+    <string name="newRuleSetInitiatorAction">4/5\nWählen Sie die Aktion und ihre Vergleichsstruktur des Initiators, die das Event triggern werden.</string>
+    <string name="newRuleSetActorAction">5/5\nWählen Sie die Aktion die beim Aktor ausgeführt werden soll und den Wert/die Intensität der Aktion</string>
+    <string name="finish">Fertigstellen</string>
+    <string name="newRuleSetNotWithinBorders">Der eingegebene Parameter mit dem verglichen werden soll befindet sich außerhalb der vorgeschriebenen Grenzen des Geräts</string>
 </resources>

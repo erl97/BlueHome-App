@@ -144,7 +144,7 @@ public class RulesetList extends AppCompatActivity {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(RulesetList.this, CreateRuleset.class);
+                Intent i = new Intent(RulesetList.this, /*CreateRuleset.class*/WizardCreateNewRuleSet.class);
                 startActivity(i);
             }
         });
