@@ -567,4 +567,13 @@ public class RuleSetStorageManager extends DatabaseInitiator {
         }
         return 0;
     }
+
+    public void deleteRelatedRules(BlueHomeDevice dev) {
+        ArrayList<RulesetObject> sets = getAllRulessets();
+        for(RulesetObject set : sets) {
+            if(set.getDev1().equals(dev) || (set.getDev2() != null && set.getDev2().equals(dev))) {
+                deleteRuleSet(set.getRulesetID());
+            }
+        }
+    }
 }

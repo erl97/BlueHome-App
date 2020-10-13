@@ -1,6 +1,9 @@
 package de.th_nuernberg.bluehome;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +19,7 @@ import java.util.ArrayList;
 
 import de.th_nuernberg.bluehome.Adapters.DeviceListAdapter;
 import de.th_nuernberg.bluehome.BlueHomeDatabase.BlueHomeDeviceStorageManager;
+import de.th_nuernberg.bluehome.BlueHomeDatabase.RuleSetStorageManager;
 
 /**
  * DeviceList Activity lists all known {@link BlueHomeDevice}s and offers the ability to edit and delete the devices.
@@ -28,7 +32,10 @@ public class DeviceList extends AppCompatActivity {
     private ArrayList<BlueHomeDevice> devices;
     private FloatingActionButton deleteButton, addButton;
     private BlueHomeDeviceStorageManager storageManager = new BlueHomeDeviceStorageManager(this);
+    private RuleSetStorageManager ruleStorageManager = new RuleSetStorageManager(this);
     private DeviceListAdapter list_adapter;
+    private int x1;
+    private ArrayList<BlueHomeDevice> toDelete;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +55,7 @@ public class DeviceList extends AppCompatActivity {
         devices = storageManager.getAllDevices();
 
         list_adapter = new DeviceListAdapter(this, devices);
-              list.setAdapter(list_adapter);
+        list.setAdapter(list_adapter);
 
 
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -59,7 +66,6 @@ public class DeviceList extends AppCompatActivity {
                 startActivity(i);
             }
         });
-
 
 
         //Delete Entries from list:
@@ -74,21 +80,66 @@ public class DeviceList extends AppCompatActivity {
                 if ((devices.size() > 0) && (!list_adapter.isDeleteActive())) {
                     list_adapter.setDeleteActive(true);
                 } else if ((devices.size() > 0) && (list_adapter.isDeleteActive())) {
-
-                    //TODO: ask for sure
+                    toDelete = new ArrayList<>();
                     CheckBox cb;
-                    for (int x = 0; x < list.getChildCount() ;x++){
-                        cb = (CheckBox)list.getChildAt(x).findViewById(R.id.device_list_delete);
-                        if(cb.isChecked()){
-                            storageManager.deleteDevice(devices.get(x).getMacAddress());
+                    for (int x = 0; x < list.getChildCount(); x++) {
+                        cb = (CheckBox) list.getChildAt(x).findViewById(R.id.device_list_delete);
+                        if (cb.isChecked()) {
+
+                            toDelete.add(devices.get(x));
+
+
                         }
+
+
                     }
 
+
+
+                    final AlertDialog.Builder sureDialog = new AlertDialog.Builder(DeviceList.this, R.style.AlertDialogStyle);
+                    String message = "";
+                    if(toDelete.size() > 1) {
+                        message = DeviceList.this.getResources().getString(R.string.dialog_delete_device_message_multiple);
+                        for(BlueHomeDevice a : toDelete) {
+                            message +=( "\n" + a.getShownName() );
+                        }
+                    } else if (toDelete.size() == 1){
+                        message = DeviceList.this.getResources().getString(R.string.dialog_delete_device_message) + toDelete.get(0).getShownName() + DeviceList.this.getResources().getString(R.string.dialog_delete_device_message_pt2);
+                    }
+                    sureDialog.setMessage(message);
+                    sureDialog.setTitle(R.string.dialog_delete_device_title);
+                    sureDialog.setIcon(R.drawable.delete);
+                    sureDialog.setPositiveButton(R.string.dialog_delete_device_pos_button, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            for(BlueHomeDevice a : toDelete) {
+                                ruleStorageManager.deleteRelatedRules(a);
+                                storageManager.deleteDevice(a.getMacAddress());
+                            }
+                            devices = storageManager.getAllDevices();
+                            list_adapter.setNewDevicelist(devices);
+                            list_adapter.notifyDataSetChanged();
+                            list.deferNotifyDataSetChanged();
+                        }
+
+
+                    });
+
+                    sureDialog.setNegativeButton(R.string.dialog_delete_device_neg_button, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
+
+
+                    sureDialog.show();
+
+
                     list_adapter.setDeleteActive(false);
-
                 }
-
-                if(list_adapter.isDeleteActive())
+                if (list_adapter.isDeleteActive())
                     deleteButton.setImageDrawable(getDrawable(R.drawable.delete_selected));
                 else
                     deleteButton.setImageDrawable(getDrawable(R.drawable.delete));
@@ -97,6 +148,7 @@ public class DeviceList extends AppCompatActivity {
                 list_adapter.setNewDevicelist(devices);
                 list_adapter.notifyDataSetChanged();
                 list.deferNotifyDataSetChanged();
+
 
             }
         });
@@ -111,8 +163,7 @@ public class DeviceList extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume()
-    {
+    protected void onResume() {
         super.onResume();
         devices = storageManager.getAllDevices();
         list_adapter.setNewDevicelist(devices);
@@ -121,9 +172,8 @@ public class DeviceList extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){
-        if(item.getItemId() == android.R.id.home)
-        {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
             onBackPressed();
             return true;
         }

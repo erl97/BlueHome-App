@@ -161,5 +161,6 @@ public class BlueHomeDeviceStorageManager extends DatabaseInitiator {
         }
         return 0;
     }
+
 }
 

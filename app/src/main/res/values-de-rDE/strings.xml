@@ -136,4 +136,10 @@
     <string name="newRuleSetActorAction">5/5\nWählen Sie die Aktion die beim Aktor ausgeführt werden soll und den Wert/die Intensität der Aktion</string>
     <string name="finish">Fertigstellen</string>
     <string name="newRuleSetNotWithinBorders">Der eingegebene Parameter mit dem verglichen werden soll befindet sich außerhalb der vorgeschriebenen Grenzen des Geräts</string>
+    <string name="dialog_delete_device_message">"Sind Sie sicher dass sie das Gerät "</string>
+    <string name="dialog_delete_device_pos_button">löschen</string>
+    <string name="dialog_delete_device_title">Gerät löschen?</string>
+    <string name="dialog_delete_device_neg_button">zurück</string>
+    <string name="dialog_delete_device_message_pt2">" inklusive aller, das Gerät refernzierenden Regeln löschen wollen?"</string>
+    <string name="dialog_delete_device_message_multiple">Sind Sie sicher dass sie folgende Gräte inklusive aller sich darauf beziehenen Regeln löschen wollen?</string>
 </resources>

@@ -135,4 +135,10 @@
     <string name="newRuleSetActorAction">5/5\nChose the action of the actor and the value/intensity of the action</string>
     <string name="finish">Finish</string>
     <string name="newRuleSetNotWithinBorders">The given parameter to compare with is not within the allowed range of the device</string>
+    <string name="dialog_delete_device_message">"Are you sure you want to delete the Device "</string>
+    <string name="dialog_delete_device_title">Delete Device?</string>
+    <string name="dialog_delete_device_pos_button">delete</string>
+    <string name="dialog_delete_device_neg_button">back</string>
+    <string name="dialog_delete_device_message_pt2">" and all related rules?"</string>
+    <string name="dialog_delete_device_message_multiple">Are you sure you want to delete the following Devices and al related Rules?</string>
 </resources>
