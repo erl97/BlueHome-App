@@ -1,6 +1,12 @@
 package de.th_nuernberg.bluehome;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +17,10 @@ import android.widget.TextView;
 
 import org.xmlpull.v1.XmlSerializer;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringWriter;
@@ -20,6 +30,7 @@ import java.util.ArrayList;
 import javax.xml.XMLConstants;
 
 import de.th_nuernberg.bluehome.BlueHomeDatabase.BlueHomeDeviceStorageManager;
+import de.th_nuernberg.bluehome.BlueHomeDatabase.RuleSetStorageManager;
 import lib.folderpicker.FolderPicker;
 
 /**
@@ -54,9 +65,60 @@ public class ExportData extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch(requestCode) {
             case 9999:
-                Log.i("DIRBROWSER", "result");
-                Log.i("DIRBROWSER", data.getExtras().getString("data"));
-                pathView.setText(data.getExtras().getString("data"));
+                if (data.getExtras().getString("data") == null)
+                    break;
+                if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                    Log.i("DIRBROWSER", "result");
+                    Log.i("DIRBROWSER", data.getExtras().getString("data"));
+                    pathView.setText(data.getExtras().getString("data"));
+
+                    try {
+                        String fullPath = data.getExtras().getString("data");
+                        File dir = new File(fullPath);
+                        if (!dir.exists()) {
+                            dir.mkdirs();
+                        }
+                        OutputStream fOut = null;
+                        File file = new File(fullPath, "ruleExport.json");
+                        if(file.exists())
+                            file.delete();
+                        file.createNewFile();
+                        fOut = new FileOutputStream(file);
+                        fOut.write(new RuleSetStorageManager(this).toJSON().getBytes());
+                        fOut.flush();
+                        fOut.close();
+                        final AlertDialog alertDialog = new AlertDialog.Builder(ExportData.this).create();
+                        alertDialog.setTitle("Export successfully");
+                        alertDialog.setMessage("The Settings of this App have succesfully been exported.");
+                        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        finish();
+                                    }
+                                });
+                        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                            @Override
+                            public void onShow(DialogInterface dialogInterface) {
+                                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor((Color.RED));
+                            }
+                        });
+                        alertDialog.show();
+
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    //File write logic here
+                }
+                else
+                {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 9998);
+
+                }
+
+
                 break;
         }
     }

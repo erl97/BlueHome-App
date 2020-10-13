@@ -21,15 +21,10 @@ import android.widget.Toast;
 
 import java.util.Arrays;
 
-import de.th_nuernberg.bluehome.BLEManagement.BLEBufferElement;
 import de.th_nuernberg.bluehome.BLEManagement.BLEDataExchangeManager;
 import de.th_nuernberg.bluehome.BLEManagement.BLEService;
-import de.th_nuernberg.bluehome.BLEManagement.ErrorObject;
 import de.th_nuernberg.bluehome.BlueHomeDatabase.BlueHomeDeviceStorageManager;
 import de.th_nuernberg.bluehome.RuleProcessObjects.ActionObject;
-import de.th_nuernberg.bluehome.RuleProcessObjects.RPC;
-import de.th_nuernberg.bluehome.RuleProcessObjects.RuleObject;
-import de.th_nuernberg.bluehome.RuleProcessObjects.SourceObject;
 
 /**
  * EditDevice Activity offers tools to edit device data like shown name and image
@@ -48,7 +43,7 @@ public class EditDevice extends AppCompatActivity {
     private BlueHomeDeviceStorageManager db = new BlueHomeDeviceStorageManager(this);
     private BLEDataExchangeManager bleman = new BLEDataExchangeManager();
 
-    private Button runAction;
+    private Button btnDirectInterface;
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
@@ -69,7 +64,7 @@ public class EditDevice extends AppCompatActivity {
         macAddressView = (TextView)findViewById(R.id.edit_device_mac);
         imgSpinnerView = (Spinner)findViewById(R.id.edit_device_img_spinner);
         submitButton = (Button)findViewById(R.id.edit_device_submit_button);
-        runAction = (Button)findViewById(R.id.button2);
+        btnDirectInterface = (Button)findViewById(R.id.btnDirectInterface);
 
 
         spinnerImages = new Integer[]{R.drawable.bluehome_node, R.drawable.bluehome_node_1, R.drawable.bluehome_node_2, R.drawable.bluehome_node_3, R.drawable.bluehome_node_4};
@@ -82,24 +77,6 @@ public class EditDevice extends AppCompatActivity {
         realNameView.setText(toEdit.getDeviceName());
         macAddressView.setText(toEdit.getMacAddress());
 
-        switch (toEdit.getNodeType())
-        {
-            case 1:
-                runAction.setText(getResources().getString(R.string.comp_lbl_gpo));
-                break;
-
-            case 2:
-                runAction.setText(getResources().getString(R.string.relay_1) + " " + getResources().getString(R.string.toggle));
-                break;
-
-            case 3:
-                runAction.setText(getResources().getString(R.string.buzzer) + " " + getResources().getString(R.string.short_beep));
-                break;
-
-                default:
-                    runAction.setText("ACTION");
-                    break;
-        }
 
         ImageSpinnerAdapter adapter = new ImageSpinnerAdapter(getApplicationContext(), R.layout.image_spinner_layout, spinnerImages);
         imgSpinnerView.setAdapter(adapter);
@@ -119,6 +96,15 @@ public class EditDevice extends AppCompatActivity {
 
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
                 new IntentFilter("WRITE_FAIL"));
+
+        btnDirectInterface.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(EditDevice.this, DirectInterface.class);
+                intent.putExtra("macAddress", toEdit.getMacAddress());
+                startActivity(intent);
+            }
+        });
 
     }
 

@@ -38,6 +38,7 @@ public class WizardCreateNewRuleSet extends FragmentActivity {
         RuleSetStorageManager ruleSetStorageManager = new RuleSetStorageManager(this);
         RulesetObject newRuleSet = new RulesetObject();
         newRuleSet.setName(rulesetName.name.getText().toString());
+        newRuleSet.setRule1(new RuleObject());
         newRuleSet.setRulesetID(ruleSetStorageManager.getNextFreeRulesetId());
         if (rulesetSource.devs.get(rulesetSource.source_device.getSelectedItemPosition() - 1).getMacAddress().equals(rulesetSource.devs.get(rulesetSource.target_device.getSelectedItemPosition() - 1).getMacAddress()))
         {
@@ -61,6 +62,7 @@ public class WizardCreateNewRuleSet extends FragmentActivity {
             newRuleSet.getRule1().getToComp().setSourceID(nodeInfo.getSourceID(rulesetSource.devs.get(rulesetSource.source_device.getSelectedItemPosition() - 1).getNodeType(), rulesetInitiatorAction.initiator, rulesetInitiatorAction.actions.get(rulesetInitiatorAction.spinnerActions.getSelectedItemPosition())));
             newRuleSet.getRule1().getToComp().setParams(nodeInfo.getParam(rulesetSource.devs.get(rulesetSource.source_device.getSelectedItemPosition() - 1).getNodeType(), rulesetInitiatorAction.initiator, (byte) Integer.parseInt(rulesetInitiatorAction.valueIn.getText().toString())));
         } else {
+            newRuleSet.setRule2(new RuleObject());
             newRuleSet.setAction1(new ActionObject());
             newRuleSet.setAction2(new ActionObject());
             newRuleSet.setRule1(new RuleObject());

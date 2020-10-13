@@ -37,6 +37,14 @@ public class AppSettings extends AppCompatActivity {
             }
         });
 
+        importView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(AppSettings.this, ImportData.class);
+                startActivity(i);
+            }
+        });
+
         manAddView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

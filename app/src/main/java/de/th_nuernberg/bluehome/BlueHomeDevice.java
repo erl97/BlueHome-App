@@ -1,11 +1,5 @@
 package de.th_nuernberg.bluehome;
 
-import android.bluetooth.BluetoothDevice;
-import android.net.MacAddress;
-
-import java.util.ArrayList;
-import java.util.Objects;
-
 /**
  * BlueHomeDevice is the logical clone to a physical BlueHome device. It contains information that is needed to connect to the device.
  *
@@ -22,13 +16,18 @@ public class BlueHomeDevice {
     private byte macId;
 
     public BlueHomeDevice(String address, String deviceName) {
-        this.address = address;
-        this.deviceName = deviceName;
+        this.setAddress(address);
+        this.setDeviceName(deviceName);
+    }
+
+    public BlueHomeDevice()
+    {
+
     }
 
     public BlueHomeDevice(BlueHomeDevice dev) {
-        this.address = dev.getMacAddress();
-        this.deviceName = dev.getDeviceName();
+        this.setAddress(dev.getMacAddress());
+        this.setDeviceName(dev.getDeviceName());
         this.shownName = dev.getShownName();
         this.nodeType = dev.getNodeType();
         this.imgID = dev.getImgID();
@@ -71,7 +70,7 @@ public class BlueHomeDevice {
      * @return mac address
      */
     public String getMacAddress() {
-        return address;
+        return getAddress();
     }
 
     /**
@@ -145,5 +144,17 @@ public class BlueHomeDevice {
             return true;
         else
             return false;
+    }
+
+    public void setDeviceName(String deviceName) {
+        this.deviceName = deviceName;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }
