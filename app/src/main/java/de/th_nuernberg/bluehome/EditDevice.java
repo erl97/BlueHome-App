@@ -103,6 +103,7 @@ public class EditDevice extends AppCompatActivity {
                 Intent intent = new Intent(EditDevice.this, DirectInterface.class);
                 intent.putExtra("macAddress", toEdit.getMacAddress());
                 startActivity(intent);
+                //writeAction(view);
             }
         });
 
